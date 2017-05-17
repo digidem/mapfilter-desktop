@@ -15,6 +15,7 @@ const traverse = require('traverse')
 const remote = require('electron').remote
 const toBuffer = require('blob-to-buffer')
 const assign = require('object-assign')
+const diff = require('lodash/difference')
 
 // const JSONStream = require('JSONStream')
 // const through = require('through2')
@@ -58,13 +59,14 @@ class Home extends React.Component {
       showModal: false,
       mapStyle: 'http://localhost:8080/style.json'
     }
-    this.getOfflineStyle()
+    // this.getOfflineStyle()
     this.getFeatures()
     this.closeModal = this.closeModal.bind(this)
     this.uploadForm = this.uploadForm.bind(this)
     this.uploadFile = this.uploadFile.bind(this)
     this.onUpload = this.onUpload.bind(this)
     this.handleDatasetChange = this.handleDatasetChange.bind(this)
+    this.handleChangeFeatures = this.handleChangeFeatures.bind(this)
     this.ActionButton = createAddButton(this.handleAddButtonClick.bind(this))
     this.toolbarButtons = [
       createSyncButton(this.handleSyncButtonClick.bind(this)),
@@ -83,6 +85,20 @@ class Home extends React.Component {
 
   handleDatasetChange (e, i, value) {
     this.setState({formId: value})
+  }
+
+  handleChangeFeatures (newFeatures) {
+    const features = this.state.featuresByFormId[this.state.formId]
+    console.log('features', features)
+    console.log('new features', newFeatures)
+    diff(newFeatures, features).forEach(f => {
+      api.observationCreate(f, (err) => {
+        if (err) console.error(err)
+      })
+    })
+    const featuresByFormId = assign({}, this.state.featuresByFormId)
+    featuresByFormId[this.state.formId] = newFeatures
+    this.setState({featuresByFormId: featuresByFormId})
   }
 
   closeModal () {
@@ -156,6 +172,7 @@ class Home extends React.Component {
       mapStyle && h(MapFilter, {
         key: 1,
         features: featuresByFormId[formId] || [],
+        onChangeFeatures: this.handleChangeFeatures,
         mapStyle: mapStyle,
         fieldTypes: {
           impacts: 'space_delimited',
