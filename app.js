@@ -41,7 +41,7 @@ app.on('window-all-closed', function () {
 
 var dbPath = path.join(userDataPath, 'db')
 var api = new Api(dbPath)
-var mediaServer = createMediaServer(api.archive, '/media')
+var mediaServer = createMediaServer(api.media, '/media')
 http
   .createServer(function (req, res) {
     mediaServer(req, res, function (err) {

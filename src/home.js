@@ -16,11 +16,9 @@ const remote = require('electron').remote
 const toBuffer = require('blob-to-buffer')
 const assign = require('object-assign')
 const diff = require('lodash/difference')
+const path = require('path')
 
-// const JSONStream = require('JSONStream')
-// const through = require('through2')
-// const websocket = require('websocket-stream')
-
+const getMediaFilename = require('./media_filename')
 const XFormUploader = require('./uploader')
 const Modal = require('./modal')
 const SyncData = require('./sync')
@@ -89,8 +87,6 @@ class Home extends React.Component {
 
   handleChangeFeatures (newFeatures) {
     const features = this.state.featuresByFormId[this.state.formId]
-    console.log('features', features)
-    console.log('new features', newFeatures)
     diff(newFeatures, features).forEach(f => {
       api.observationCreate(f, (err) => {
         if (err) console.error(err)
@@ -118,7 +114,6 @@ class Home extends React.Component {
         if (!response.ok) return console.error('local tile server not found')
         // local tiles are available
         offlineMapStyle.sources.composite.url = tileJSON
-        console.log('offline!', offlineMapStyle)
         this.setState({mapStyle: offlineMapStyle})
       })
   }
@@ -154,13 +149,20 @@ class Home extends React.Component {
     }))
   }
 
-  uploadFile (blob, filename) {
+  uploadFile (blob, filepath) {
     return new Promise((resolve, reject) => {
-      toBuffer(blob, (err, buffer) => {
+      toBuffer(blob, (err, buf) => {
         if (err) return reject(err)
-        api.mediaCreate(filename, buffer, (err, id) => {
+        const opts = {lastModifiedDate: blob.lastModifiedDate}
+        const origFilename = path.parse(filepath).base
+        // Constructs a filename of the format YYYY-MM-DDTHH:MM:SS.dddZ_origFilename
+        // where the date is either from EXIF headers or file modified date
+        getMediaFilename(origFilename, buf, opts, function (err, filename) {
           if (err) return reject(err)
-          resolve(id)
+          api.mediaCreate(filename, buf, (err, id) => {
+            if (err) return reject(err)
+            resolve(id)
+          })
         })
       })
     })
