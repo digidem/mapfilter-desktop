@@ -1,6 +1,12 @@
 const React = require('react')
 const h = React.createElement
-const { Card, CardText, CardHeader } = require('material-ui/Card')
+const { Card, CardText, CardHeader, CardActions } = require('material-ui/Card')
+const RaisedButton = require('material-ui/RaisedButton').default
+const remote = require('electron').remote
+const path = require('path')
+const api = remote.require('./app').api
+const mkdirp = require('mkdirp')
+
 const { defineMessages, FormattedMessage } = require('react-intl')
 
 const messages = defineMessages({
@@ -16,17 +22,19 @@ const styles = {
     marginLeft: 12,
     float: 'right'
   },
+  syncButton: {
+    marginBottom: 18
+  },
   body: {
     marginBottom: 12,
-    minHeight: 200,
-    display: 'flex'
-  },
-  card: {
-    maxHeight: '100%',
-    width: '100%',
-    flex: 1,
+    minHeight: 100,
     display: 'flex',
-    flexDirection: 'column'
+    textAlign: 'center',
+    padding: '12px 12px',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems: 'center'
   },
   cardContainerStyle: {
     flex: 1,
@@ -35,11 +43,131 @@ const styles = {
   },
   cardText: {
     overflow: 'auto'
+  },
+  header: {
+    lineHeight: '22px',
+    boxSizing: 'content-box',
+    borderBottom: '1px solid #cccccc'
+  },
+  uploadBoxText: {
+    fontWeight: 'bold',
+    marginBottom: 24
+  },
+  card: {
+    maxHeight: '100%',
+    width: '100%',
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column'
   }
 }
 
+const SelectSyncButton = ({onClick}) => (
+  h(RaisedButton, {
+    style: styles.syncButton,
+    label: 'Select Sync Folder',
+    onTouchTap: onClick,
+    secondary: true
+  })
+)
+
+const CloseButton = ({onClick}) => (
+  h(RaisedButton, {
+    style: styles.button,
+    label: 'Close',
+    onTouchTap: onClick,
+    primary: true
+  })
+)
+
+const CancelButton = ({onClick}) => (
+  h(RaisedButton, {
+    style: styles.button,
+    onTouchTap: onClick,
+    label: 'Cancel'
+  })
+)
+
+const CardBody = ({onSelectSyncFolder, onNewSyncFolder}) => (
+  h('div', {style: styles.body}, [
+    h(SelectSyncButton, {onClick: onSelectSyncFolder}),
+    h('div', {}, [
+      'or ',
+      h('a', {href: '#', onClick: onNewSyncFolder}, 'create new sync folder')
+    ])
+  ])
+)
+
 class SyncData extends React.Component {
+  constructor (props) {
+    super(props)
+    this.handleSelectSyncFolder = this.handleSelectSyncFolder.bind(this)
+    this.handleNewSyncFolder = this.handleNewSyncFolder.bind(this)
+    this.state = {
+      pending: null,
+      error: null,
+      progress: 0
+    }
+  }
+
+  handleSelectSyncFolder () {
+    const filepaths = remote.dialog.showOpenDialog(null, {
+      title: 'Select Sync Folder',
+      properties: ['openDirectory']
+    })
+    if (!filepaths || !filepaths.length) return
+    this.sync(filepaths[0])
+  }
+
+  handleNewSyncFolder () {
+    const filepath = remote.dialog.showSaveDialog(null, {
+      title: 'Create New Sync Folder',
+      filters: [{name: 'TiziiTizii Sync', extensions: ['tizii']}]
+    })
+    mkdirp.sync(filepath)
+    this.sync(filepath)
+  }
+
+  sync (dir) {
+    const self = this
+    const logPath = path.join(dir, 'data.tgz')
+    const mediaPath = path.join(dir, 'media')
+    this.setState({pending: 2})
+    api.replicateOsmWithFile(logPath, done)
+    api.replicateMediaWithDirectory(mediaPath, {progressFn: onProgress}, done)
+    function done (err) {
+      const pending = self.state.pending
+      if (err) {
+        self.setState({error: err, pending: null})
+      } else {
+        self.setState({pending: pending === null ? null : pending - 1})
+      }
+    }
+    function onProgress (progress) {
+      self.setState({progress: progress})
+    }
+  }
+
   render () {
+    let cardBody
+    let syncState = 'pending'
+    if (this.state.pending === 0) syncState = 'done'
+    if (this.state.pending > 0) syncState = 'inprogress'
+
+    switch (syncState) {
+      case 'pending':
+        cardBody = h(CardBody, {
+          onSelectSyncFolder: this.handleSelectSyncFolder,
+          onNewSyncFolder: this.handleNewSyncFolder
+        })
+        break
+      case 'done':
+        cardBody = h('div', {}, 'complete!')
+        break
+      case 'inprogress':
+      default:
+        cardBody = h('div', {}, 'progress: ' + this.state.progress)
+    }
     return h(Card, {
       style: styles.card,
       containerStyle: styles.cardContainerStyle,
@@ -49,7 +177,12 @@ class SyncData extends React.Component {
         style: styles.header,
         title: h('h3', {}, h(FormattedMessage, messages.syncData))
       }),
-      h(CardText, {style: styles.cardText}, 'Hello World')
+      h(CardText, {style: styles.cardText}, cardBody),
+      h(CardActions, {}, [
+        h(syncState === 'done' ? CloseButton : CancelButton, {
+          onClick: this.props.onCloseClick
+        })
+      ])
     ])
   }
 }
