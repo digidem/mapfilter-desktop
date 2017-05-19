@@ -193,6 +193,11 @@ class Home extends React.Component {
           public: FIELD_TYPE_BOOLEAN,
           summary: FIELD_TYPE_STRING
         },
+        fieldOrder: {
+          location: 0,
+          public: 1,
+          summary: 2
+        },
         actionButton: this.ActionButton,
         toolbarButtons: this.toolbarButtons,
         toolbarTitle: h(Title, {
