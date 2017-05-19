@@ -130,18 +130,9 @@ class SyncData extends React.Component {
 
   sync (dir) {
     const self = this
-    const logPath = path.join(dir, 'data.tgz')
-    const mediaPath = path.join(dir, 'media')
-    this.setState({pending: 2})
-    api.replicateOsmWithFile(logPath, done)
-    api.replicateMediaWithDirectory(mediaPath, {progressFn: onProgress}, done)
-    function done (err) {
-      const pending = self.state.pending
-      if (err) {
-        self.setState({error: err, pending: null})
-      } else {
-        self.setState({pending: pending === null ? null : pending - 1})
-      }
+    api.replicateWithDirectory(dir, {progressFn: onProgress}, done)
+    function done (errs) {
+      if (errs) self.setState({error: errs[0]})
     }
     function onProgress (progress) {
       self.setState({progress: progress})
