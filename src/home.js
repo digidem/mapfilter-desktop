@@ -172,7 +172,8 @@ class Home extends React.Component {
           impacts: FIELD_TYPE_SPACE_DELIMITED,
           people: FIELD_TYPE_SPACE_DELIMITED,
           public: FIELD_TYPE_BOOLEAN,
-          summary: FIELD_TYPE_STRING
+          summary: FIELD_TYPE_STRING,
+          'meta.instanceName': FIELD_TYPE_STRING
         },
         fieldOrder: {
           location: 0,
