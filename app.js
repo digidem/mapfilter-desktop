@@ -18,7 +18,6 @@ if (isDev) {
   process.env.NODE_ENV = 'production'
 }
 
-var tileserver = require('./lib/tileserver')
 var createMediaServer = require('./lib/media_server')
 var config = require('./config')
 var Api = require('./lib/api')
@@ -71,13 +70,13 @@ function onAppReady () {
 
   setupFileIPCs(win, electron.ipcMain, win.webContents)
 
-  if (fs.existsSync(path.join(userDataPath, 'mapfilter.mbtiles'))) {
-    // workaround for pathnames containing spaces
-    setupTileServer({
-      protocol: 'mbtiles:',
-      pathname: path.join(userDataPath, 'mapfilter.mbtiles')
-    })
-  }
+  // if (fs.existsSync(path.join(userDataPath, 'mapfilter.mbtiles'))) {
+  //   // workaround for pathnames containing spaces
+  //   setupTileServer({
+  //     protocol: 'mbtiles:',
+  //     pathname: path.join(userDataPath, 'mapfilter.mbtiles')
+  //   })
+  // }
 
   function setupWindow () {
     var indexHtml = 'file://' + path.resolve(__dirname, './index.html')
