@@ -32,7 +32,7 @@ const mediaBaseUrl = `http://${obsServer.host}:${obsServer.port}/media/`
 const Title = ({datasets, activeDataset, onChange}) => (
   h('div', {}, [
     h('div', {key: 1, style: {float: 'left'}}, [
-      h('span', {key: 1, style: {fontWeight: 500}}, 'TiziTizi'),
+      h('span', {key: 1, style: {fontWeight: 500}}, 'TiziiTizii'),
       h('span', {key: 2, style: {fontWeight: 300}}, ' /')
     ]),
     h(DropDownMenu, {
