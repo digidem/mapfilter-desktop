@@ -135,6 +135,12 @@ class Home extends React.Component {
     return new Promise((resolve, reject) => {
       api.observationCreate(formData, (err, doc) => {
         if (err) return reject(err)
+        if (typeof formData.properties.public === 'undefined') {
+          formData.properties.public = false
+        }
+        if (!formData.properties.summary) {
+          formData.properties.summary = ''
+        }
         resolve(formData)
       })
     })
