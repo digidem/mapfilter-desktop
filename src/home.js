@@ -17,6 +17,11 @@ const toBuffer = require('blob-to-buffer')
 const assign = require('object-assign')
 const diff = require('lodash/difference')
 const path = require('path')
+const {
+  FIELD_TYPE_STRING,
+  FIELD_TYPE_BOOLEAN,
+  FIELD_TYPE_SPACE_DELIMITED
+} = require('react-mapfilter/es5/constants')
 
 const getMediaFilename = require('./media_filename')
 const XFormUploader = require('./uploader')
@@ -183,8 +188,10 @@ class Home extends React.Component {
         onChangeFeatures: this.handleChangeFeatures,
         mapStyle: mapStyle,
         fieldTypes: {
-          impacts: 'space_delimited',
-          people: 'space_delimited'
+          impacts: FIELD_TYPE_SPACE_DELIMITED,
+          people: FIELD_TYPE_SPACE_DELIMITED,
+          public: FIELD_TYPE_BOOLEAN,
+          summary: FIELD_TYPE_STRING
         },
         actionButton: this.ActionButton,
         toolbarButtons: this.toolbarButtons,
