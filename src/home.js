@@ -27,7 +27,6 @@ const getMediaFilename = require('./media_filename')
 const XFormUploader = require('./uploader')
 const Modal = require('./modal')
 const SyncData = require('./sync')
-const mapStyle = require('../static/style.json')
 const config = require('../config')
 const obsServer = config.servers.observations
 const api = remote.require('./app').api
@@ -62,7 +61,6 @@ class Home extends React.Component {
       showModal: false,
       mapStyle: 'http://localhost:8080/style.json'
     }
-    // this.getOfflineStyle()
     this.getFeatures()
     this.closeModal = this.closeModal.bind(this)
     this.uploadForm = this.uploadForm.bind(this)
@@ -104,23 +102,6 @@ class Home extends React.Component {
 
   closeModal () {
     this.setState({showModal: false})
-  }
-
-  getOfflineStyle () {
-    const tileJSON = `http://${config.servers.tiles.host}:${config.servers.tiles.port}/index.json`
-    const baseUrl = `http://${config.servers.static.host}:${config.servers.static.port}/`
-    const offlineMapStyle = clone(mapStyle)
-    ;['glyphs', 'sprite'].forEach(function (key) {
-      offlineMapStyle[key] = offlineMapStyle[key].replace(/mapfilter:\/\//, baseUrl)
-    })
-
-    fetch(tileJSON)
-      .then(response => {
-        if (!response.ok) return console.error('local tile server not found')
-        // local tiles are available
-        offlineMapStyle.sources.composite.url = tileJSON
-        this.setState({mapStyle: offlineMapStyle})
-      })
   }
 
   getFeatures () {
