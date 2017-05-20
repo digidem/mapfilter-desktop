@@ -104,7 +104,6 @@ class SyncData extends React.Component {
     this.handleSelectSyncFolder = this.handleSelectSyncFolder.bind(this)
     this.handleNewSyncFolder = this.handleNewSyncFolder.bind(this)
     this.state = {
-      pending: null,
       error: null,
       progress: 0
     }
@@ -133,6 +132,7 @@ class SyncData extends React.Component {
     api.replicateWithDirectory(dir, {progressFn: onProgress}, done)
     function done (errs) {
       if (errs) self.setState({error: errs[0]})
+      self.setState({progress: 1})
     }
     function onProgress (progress) {
       self.setState({progress: progress})
@@ -141,23 +141,20 @@ class SyncData extends React.Component {
 
   render () {
     let cardBody
-    let syncState = 'pending'
-    if (this.state.pending === 0) syncState = 'done'
-    if (this.state.pending > 0) syncState = 'inprogress'
+    const {progress} = this.state
 
-    switch (syncState) {
-      case 'pending':
+    switch (progress) {
+      case 0: // not started
         cardBody = h(CardBody, {
           onSelectSyncFolder: this.handleSelectSyncFolder,
           onNewSyncFolder: this.handleNewSyncFolder
         })
         break
-      case 'done':
+      case 1: // done
         cardBody = h('div', {}, 'complete!')
         break
-      case 'inprogress':
-      default:
-        cardBody = h('div', {}, 'progress: ' + this.state.progress)
+      default: // in progress
+        cardBody = h('div', {}, 'progress: ' + progress)
     }
     return h(Card, {
       style: styles.card,
@@ -170,7 +167,7 @@ class SyncData extends React.Component {
       }),
       h(CardText, {style: styles.cardText}, cardBody),
       h(CardActions, {}, [
-        h(syncState === 'done' ? CloseButton : CancelButton, {
+        h(progress === 1 ? CloseButton : CancelButton, {
           onClick: this.props.onCloseClick
         })
       ])
