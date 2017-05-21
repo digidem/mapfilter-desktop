@@ -60,7 +60,7 @@
     "pump": "^1.0.2",
     "randombytes": "^2.0.3",
     "react-dom": "^15.4.1",
-    "react-mapfilter": "^1.0.0-alpha.10",
+    "react-mapfilter": "^1.0.0-alpha.11",
     "react-overlays": "^0.7.0",
     "react-xform-uploader": "^1.0.1",
     "router": "^1.1.4",
