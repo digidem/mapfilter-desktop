@@ -3,7 +3,6 @@ const h = React.createElement
 const { Card, CardText, CardHeader, CardActions } = require('material-ui/Card')
 const RaisedButton = require('material-ui/RaisedButton').default
 const remote = require('electron').remote
-const path = require('path')
 const api = remote.require('./app').api
 const mkdirp = require('mkdirp')
 
