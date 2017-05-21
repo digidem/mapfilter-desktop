@@ -29,9 +29,11 @@ const Modal = require('./modal')
 const SyncData = require('./sync')
 const config = require('../config')
 const obsServer = config.servers.observations
+const styleServer = config.servers.style
 const api = remote.require('./app').api
 
 const mediaBaseUrl = `http://${obsServer.host}:${obsServer.port}/media/`
+const styleUrl = `http://${styleServer.host}:${styleServer.port}/style.json`
 
 const Title = ({datasets, activeDataset, onChange}) => (
   h('div', {}, [
@@ -59,7 +61,7 @@ class Home extends React.Component {
       },
       formId: 'monitoring',
       showModal: false,
-      mapStyle: 'http://localhost:8080/style.json'
+      mapStyle: styleUrl
     }
     this.getFeatures()
     this.closeModal = this.closeModal.bind(this)

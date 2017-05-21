@@ -22,21 +22,13 @@ module.exports = {
   ROOT_PATH: __dirname,
 
   servers: {
-    http: {
-      host: 'localhost',
-      port: 3196
-    },
     observations: {
       host: 'localhost',
       port: 3210
     },
-    static: {
+    style: {
       host: 'localhost',
       port: 3211
-    },
-    tiles: {
-      host: 'localhost',
-      port: 3212
     }
   }
 }

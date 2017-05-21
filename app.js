@@ -19,6 +19,7 @@ if (isDev) {
 }
 
 var createMediaServer = require('./lib/media_server')
+var createStyleServer = require('./lib/style_server')
 var config = require('./config')
 var Api = require('./lib/api')
 
@@ -39,23 +40,15 @@ app.on('window-all-closed', function () {
 })
 
 var dbPath = path.join(userDataPath, 'db')
+var stylePath = path.join(userDataPath, 'style')
 var api = new Api(dbPath)
-var mediaServer = createMediaServer(api.media, '/media')
 http
-  .createServer(function (req, res) {
-    mediaServer(req, res, function (err) {
-      if (err) {
-        console.error(err)
-        res.statusCode = 404
-        res.end()
-      }
-    })
-  })
+  .createServer(createMediaServer(api.media, '/media'))
   .listen(config.servers.observations.port)
 
 http
-  .createServer(ecstatic({root: path.join(__dirname, 'static')}))
-  .listen(config.servers.static.port)
+  .createServer(createStyleServer(stylePath))
+  .listen(config.servers.style.port)
 
 module.exports.api = api
 
