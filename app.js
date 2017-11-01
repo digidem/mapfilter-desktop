@@ -55,6 +55,17 @@ module.exports.api = api
 function onAppReady () {
   var win = setupWindow()
 
+
+  if (isDev) {
+    // Make sure you have the FULL path here or it won't work
+    BrowserWindow.addDevToolsExtension(
+      '/Users/gregor/Library/Application Support/Google/Chrome/default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/2.5.1_0'
+    )
+    BrowserWindow.addDevToolsExtension(
+      '/Users/gregor/Library/Application Support/Google/Chrome/default/Extensions/lmhkpmbekcpmknklioeibfkpmmfibljd/2.15.1_0'
+    )
+  }
+
   win.on('closed', function () {
     win = null
   })
