@@ -30,7 +30,8 @@
           "squirrel"
         ],
         "darwin": [
-          "zip"
+          "zip",
+          "dmg"
         ],
         "linux": [
           "deb",
@@ -47,7 +48,8 @@
       "electronInstallerRedhat": {},
       "github_repository": {
         "owner": "digidem",
-        "name": "mapfilter-desktop"
+        "name": "mapfilter-desktop",
+        "draft": false
       },
       "windowsStoreConfig": {
         "packageName": "",
