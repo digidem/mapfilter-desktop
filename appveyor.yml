@@ -21,7 +21,6 @@ branches:
 cache:
 - '%APPDATA%\npm-cache'
 - '%USERPROFILE%\.electron'
-- node_modules
 
 init:
 - git config --global core.autocrlf input
