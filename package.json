@@ -1,6 +1,6 @@
 {
   "name": "tizii-tizii",
-  "productName": "tizii-tizii",
+  "productName": "TiziiTizii",
   "description": "electron app that wraps mapfilter",
   "author": "Digital Democracy",
   "version": "0.4.3",
@@ -39,10 +39,12 @@
         ]
       },
       "electronPackagerConfig": {
-        "asar": true
+        "asar": true,
+        "win32metadata": {
+          "CompanyName": "TiziiTizii"
+        }
       },
       "electronWinstallerConfig": {
-        "name": "tizii_tizii"
       },
       "electronInstallerDebian": {},
       "electronInstallerRedhat": {},
@@ -53,7 +55,7 @@
       },
       "windowsStoreConfig": {
         "packageName": "",
-        "name": "tiziitizii"
+        "name": "TiziiTizii"
       }
     }
   },
