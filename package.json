@@ -64,6 +64,7 @@
     "collect-stream": "^1.2.1",
     "drag-drop": "^2.13.2",
     "ecstatic": "^2.1.0",
+    "electron-compile": "^6.4.2",
     "electron-config": "^0.2.1",
     "electron-debug": "^1.4.0",
     "electron-devtools-installer": "^2.2.1",
