@@ -3,55 +3,39 @@
 
 # Test against this version of Node.js
 environment:
-  nodejs_version: "8.9.0"
+  nodejs_version: "6"
+  GITHUB_TOKEN:
+    secure: fxs30i1bh6CeJPKr3/shIxXr73kd0RgEJh9VQ6zEVe7hoaRNVmSaAnj4V/MwbY+F
 
 platform:
-  - x64
+- x64
 
 # fetch repository as zip archive
 shallow_clone: true
 
-# Skip building mapfilter-desktop-vX.Y.Z tags.
-# We already know they build fine, since they're deployment artifacts.
 branches:
-  except:
-    - /mapfilter-desktop-v.*/
-
-artifacts:
-  - path: '**\*.nupkg'
-    name: nupkg
-  - path: '**\tizii-tizii*.exe'
-    name: exe
+  only:
+  - master
+  - /^v\d\.\d\.\d/
 
 cache:
-  - '%USERPROFILE%\.electron'
+- '%APPDATA%\npm-cache'
+- '%USERPROFILE%\.electron'
+- node_modules
 
 init:
-  - git config --global core.autocrlf input
+- git config --global core.autocrlf input
 
 install:
-  # Get the latest stable version of Node.js and npm.
-  - ps: Install-Product node $env:nodejs_version x64
-  - npm install -g npm@latest
-  - npm install
+- ps: Install-Product node $env:nodejs_version $env:platform
+- npm install -g npm@latest
+- set PATH=%APPDATA%\npm;%PATH%
+- npm install
+
+test_script:
+- node --version
+- npm --version
+- if %APPVEYOR_REPO_TAG% EQU false npm run make
 
 build_script:
-  - if not exist "%USERPROFILE%\.electron" md "%USERPROFILE%\.electron"
-  - npm config set msvs_version 2015 --global
-  - node --version
-  - npm --version
-  - npm run make
-  - ps: $PACKAGE_VERSION = node -e "require('./package.json').version"
-  - ps: $env:RELEASE = "${PACKAGE_NAME}-${PACKAGE_VERSION}"
-
-test: off
-
-deploy:
-  provider: GitHub
-  auth_token:
-    secure: Fo5E/3MB6OzB8M0dk7ndyIyrJoB6WvOpSYjncpYBNhBOrrCveMrd0HF4oqFQ1J/n
-  draft: false
-  prerelease: false
-  on:
-    branch: /^v/                   # don't match version tags, otherwise we'll get into a tag loop
-    appveyor_repo_tag: true        # deploy on tag push only
+- IF %APPVEYOR_REPO_TAG% EQU true npm run publish

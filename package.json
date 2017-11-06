@@ -46,8 +46,8 @@
       "electronInstallerDebian": {},
       "electronInstallerRedhat": {},
       "github_repository": {
-        "owner": "",
-        "name": ""
+        "owner": "digidem",
+        "name": "mapfilter-desktop"
       },
       "windowsStoreConfig": {
         "packageName": "",
