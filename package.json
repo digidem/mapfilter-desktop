@@ -71,6 +71,7 @@
     "electron-debug": "^1.4.0",
     "electron-devtools-installer": "^2.2.1",
     "electron-is-dev": "^0.1.2",
+    "electron-squirrel-startup": "^1.0.0",
     "from2": "^2.3.0",
     "get-ports": "^1.0.3",
     "glob": "^7.1.2",

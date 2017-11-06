@@ -16,6 +16,8 @@ if (isDev) {
   require('electron-debug')()
 }
 
+if (require('electron-squirrel-startup')) app.quit()
+
 // Path to `userData`, operating system specific, see
 // https://github.com/atom/electron/blob/master/docs/api/app.md#appgetpathname
 var userDataPath = path.join(app.getPath('userData'), 'org.digital-democracy.MapFilter')
