@@ -3,7 +3,7 @@
 
 # Test against this version of Node.js
 environment:
-  nodejs_version: "6.2.1"
+  nodejs_version: "8.9.0"
 
 platform:
   - x64
@@ -20,7 +20,7 @@ branches:
 artifacts:
   - path: '**\*.nupkg'
     name: nupkg
-  - path: '**\Installar_Mapfilter*.exe'
+  - path: '**\tizii-tizii*.exe'
     name: exe
 
 cache:
@@ -40,8 +40,7 @@ build_script:
   - npm config set msvs_version 2015 --global
   - node --version
   - npm --version
-  - npm run rebuild-electron-deps
-  - npm run create-windows-installer
+  - npm run make
   - ps: $PACKAGE_VERSION = node -e "require('./package.json').version"
   - ps: $env:RELEASE = "${PACKAGE_NAME}-${PACKAGE_VERSION}"
 
