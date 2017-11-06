@@ -3,7 +3,7 @@
   "productName": "tizii-tizii",
   "description": "electron app that wraps mapfilter",
   "author": "Digital Democracy",
-  "version": "0.2.3",
+  "version": "0.4.0",
   "repository": {
     "type": "git",
     "url": "git://github.com/digidem/mapfilter-desktop.git"
