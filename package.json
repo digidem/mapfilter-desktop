@@ -2,7 +2,7 @@
   "name": "tizii-tizii",
   "productName": "tizii-tizii",
   "description": "electron app that wraps mapfilter",
-  "author": "Stephen Whitmore <sww@eight45.net>",
+  "author": "Digital Democracy",
   "version": "0.2.3",
   "repository": {
     "type": "git",
