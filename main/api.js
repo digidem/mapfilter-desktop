@@ -95,14 +95,15 @@ Api.prototype.observationList = function (cb) {
     var values = Object.keys(row.values || {})
       .map(v => row.values[v])
     if (values.length && values[0].type === 'observation') {
-      var latest = values.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0))[0]
-      features.push(observationToFeature(latest, row.key))
+      // var latest = values.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0))[0]
+      features.push(observationToFeature(values[0], row.key))
     }
     next()
   }
 
   function done (err) {
     if (err) return cb(err)
+    features = JSON.stringify(features)
     cb(null, features)
   }
 }
