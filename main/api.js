@@ -87,6 +87,14 @@ Api.prototype.observationCreate = function (feature, cb) {
   this.osm.put(id, obs, cb)
 }
 
+Api.prototype.observationDelete = function (id, cb) {
+  this.osm.del(id, cb)
+}
+
+Api.prototype.observationUpdate = function (feature, cb) {
+  this.observationCreate(feature, cb)
+}
+
 Api.prototype.observationList = function (cb) {
   var features = []
   pump(this.osm.kv.createReadStream(), through.obj(write), done)

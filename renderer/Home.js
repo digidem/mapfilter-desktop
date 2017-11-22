@@ -11,6 +11,8 @@ import {
   FIELD_TYPE_BOOLEAN,
   FIELD_TYPE_SPACE_DELIMITED
 } from 'react-mapfilter/es5/constants'
+import xor from 'lodash/xor'
+import differenceBy from 'lodash/differenceBy'
 
 import getMediaFilename from './media_filename'
 import AddButton from './AddButton'
@@ -54,16 +56,32 @@ class Home extends React.Component {
     this.setState({formId: e.target.value})
   }
 
-  handleChangeFeatures = (newFeatures) => {
-    const features = this.state.featuresByFormId[this.state.formId]
-    diff(newFeatures, features).forEach(f => {
+  handleChangeFeatures = (changedFeatures) => {
+    const {featuresByFormId, formId} = this.state
+    const features = featuresByFormId[formId]
+    const xorFeatures = xor(changedFeatures, features)
+    const deleted = differenceBy(xorFeatures, changedFeatures, 'id')
+    const added = differenceBy(xorFeatures, features, 'id')
+    const updated = xorFeatures.filter(f => added.indexOf(f) === -1 && deleted.indexOf(f) === -1)
+
+    deleted.forEach(f => {
+      api.observationDelete(f.id, (err) => {
+        if (err) console.error(err)
+      })
+    })
+    added.forEach(f => {
       api.observationCreate(f, (err) => {
         if (err) console.error(err)
       })
     })
-    const featuresByFormId = assign({}, this.state.featuresByFormId)
-    featuresByFormId[this.state.formId] = newFeatures
-    this.setState({featuresByFormId: featuresByFormId})
+    updated.forEach(f => {
+      api.observationUpdate(f, (err) => {
+        if (err) console.error(err)
+      })
+    })
+    const newFeaturesByFormId = assign({}, this.state.featuresByFormId)
+    newFeaturesByFormId[this.state.formId] = changedFeatures
+    this.setState({featuresByFormId: newFeaturesByFormId})
   }
 
   closeModal = () => {
