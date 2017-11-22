@@ -154,6 +154,7 @@ class Home extends React.Component {
 
     return (<div>
       <MapFilter
+        mapStyle={styleUrl}
         features={featuresByFormId[formId] || []}
         onChangeFeatures={this.handleChangeFeatures}
         fieldTypes={{
