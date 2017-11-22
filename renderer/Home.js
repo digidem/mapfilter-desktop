@@ -171,8 +171,8 @@ class Home extends React.Component {
           summary: 2
         }}
         actionButton={<AddButton onClick={this.handleAddButtonClick} />}
-        toolbarButtons={[<SyncButton onClick={this.handleSyncButtonClick} />]}
-        toolbarTitle={toolbarTitle} />
+        appBarButtons={[<SyncButton onClick={this.handleSyncButtonClick} />]}
+        appBarTitle={toolbarTitle} />
       <SyncDialog
         open={showModal === 'sync'}
         onRequestClose={this.closeModal} />
