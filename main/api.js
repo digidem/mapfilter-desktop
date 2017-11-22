@@ -57,16 +57,14 @@ Api.prototype.replicateWithDirectory = function (dir, opts, done) {
 
   function onFinished (err) {
     if (err) errs.push(err)
+    if (--pending > 0) return
+    var txt = 'DO NOT MODIFY ANYTHING INSIDE THIS FOLDER PRETTY PLEASE'
+    fs.writeFile(path.join(dir, 'DO NOT MODIFY.txt'), txt, 'utf8', onWritten)
+  }
 
-    if (--pending === 0) {
-      var txt = 'DO NOT MODIFY ANYTHING INSIDE THIS FOLDER PRETTY PLEASE'
-      fs.writeFile(path.join(dir, 'DO NOT MODIFY.txt'), txt, 'utf8', onWritten)
-
-      function onWritten (err) {
-        if (err) errs.push(err)
-        done(errs.length ? errs : null)
-      }
-    }
+  function onWritten (err) {
+    if (err) errs.push(err)
+    done(errs.length ? errs : null)
   }
 }
 
