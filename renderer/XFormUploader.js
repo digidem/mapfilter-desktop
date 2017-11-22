@@ -187,7 +187,7 @@ const CancelButton = ({onClick}) => (
 )
 
 const DragDropArea = ({onChange, classes}) => (
-  <div className='upload' className={classes.uploadBox}>
+  <div className={classes.uploadBox}>
     <DialogContentText className={classes.uploadBoxText}>
       <FormattedMessage {...messages.dragHere} />
     </DialogContentText>
