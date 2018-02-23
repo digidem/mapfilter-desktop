@@ -15,9 +15,54 @@ To clone and install all dependencies and start the program, execute
 $ git clone git@github.com:digidem/mapfilter-desktop.git
 $ cd mapfilter-desktop
 $ npm install
-$ npm run rebuild-electron-deps
+$ npm rebuild
 $ npm start
 ```
+
+## Troubleshooting
+
+Make sure that the following statements are true:
+
+#### Python2.7 is your system's default python version.
+
+```
+$ python --version
+Python 2.7.x
+```
+
+You can use virtualenv or conda, or if you don't mind changing your system
+python default, you can use brute force:
+
+```
+$ ln -s `which python2` /usr/bin/python
+```
+
+On mac:
+```
+$ defaults write com.apple.versioner.python Version 2.7
+```
+
+#### The correct version of libtool is installed.
+
+Sometimes it's called `glibtool`.
+
+On Mac OSX users might see `libtool: -static is not a valid option` error. This means that `libtool` needs to be XCode's version of libtool. Make sure XCode developer tools are installed. 
+
+
+```
+$ which libtool
+/usr/local/bin/libtool
+```
+
+If you see something from homebrew, like .../Cellar/.../libtool, then you have
+the GNU version which does not have the `-static` option. You should type `brew
+unlink libtool` which will re-enable the XCode version.
+
+#### You are not developing within a `node_modules` folder.
+
+Electron-forge and electron-prebuilt-compile can give odd behavior when
+developing in a directory where there is a `node_modules` folder somewhere in
+the hierarchy. Make sure you clone the repository somewhere generic, like `~/dev`.
 
 # Development
 
@@ -26,11 +71,7 @@ $ npm start
 MapFilter Desktop uses [Electron](http://electron.atom.io/). To package the Electron app as a native Windows `.exe` or macOS `.dmg`, execute
 
 ```
-$ npm run create-windows-installer
-```
-or
-```
-$ npm run create-macos-installer
+$ npm run package
 ```
 
 The resultant installer or DMG will be placed in the `./dist` folder.
