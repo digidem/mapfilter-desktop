@@ -86,7 +86,10 @@ module.exports = function (app) {
       {
         label: 'Toggle DevTools',
         accelerator: 'Alt+Command+I',
-        click: function () { BrowserWindow.getFocusedWindow().toggleDevTools() }
+        click: function () {
+          var win = BrowserWindow.getFocusedWindow()
+          if (win) win.toggleDevTools()
+        }
       }
     ]
   },
