@@ -45,7 +45,12 @@
         }
       },
       "electronWinstallerConfig": {},
-      "electronInstallerDebian": {},
+      "electronInstallerDebian": {
+        "icon": "static/mapfilter.png",
+        "categories": [
+          "Utility"
+        ]
+      },
       "electronInstallerRedhat": {},
       "github_repository": {
         "owner": "digidem",
