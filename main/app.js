@@ -10,7 +10,7 @@ import getPorts from 'get-ports'
 import isDev from 'electron-is-dev'
 import createMediaServer from './media_server'
 import createStyleServer from './style_server'
-import Api from './api'
+import MapFilterDb from 'mapfilter-db'
 
 if (isDev) {
   require('electron-debug')()
@@ -51,7 +51,7 @@ app.on('window-all-closed', function () {
 
 var dbPath = path.join(userDataPath, 'db')
 var stylePath = path.join(userDataPath, 'style')
-var api = new Api(dbPath)
+var api = new MapFilterDb(dbPath)
 
 const mediaServer = http.createServer(createMediaServer(api.media, '/media'))
 const styleServer = http.createServer(createStyleServer(stylePath))

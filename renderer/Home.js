@@ -94,6 +94,7 @@ class Home extends React.Component {
       features = JSON.parse(features)
       this._seen = new Set(features.map(f => f.id))
       features.forEach(function (f) {
+        f = observationToFeature(f)
         f.properties = replaceProtocols(f.properties, mediaBaseUrl)
       })
       this.setState(state => ({
@@ -226,5 +227,29 @@ function replaceProtocols (obj, baseUrl) {
     }
   })
 }
+
+function observationToFeature (obs, id) {
+  var feature = {
+    id: id,
+    type: 'Feature',
+    geometry: null,
+    properties: obs.tags
+  }
+  if (obs.lon && obs.lat) {
+    feature.geometry = {
+      type: 'Point',
+      coordinates: [obs.lon, obs.lat]
+    }
+  }
+  if (typeof feature.properties.public === 'undefined') {
+    feature.properties.public = false
+  }
+  if (!feature.properties.summary) {
+    feature.properties.summary = ' '
+  }
+  f.properties = replaceProtocols(f.properties, mediaBaseUrl)
+  return feature
+}
+
 
 module.exports = Home
