@@ -91,7 +91,7 @@ class Home extends React.Component {
   getFeatures () {
     api.observationList((err, features) => {
       if (err) return console.error(err)
-      features = JSON.parse(features)
+      console.log(features)
       this._seen = new Set(features.map(f => f.id))
       features.forEach(function (f) {
         f = observationToFeature(f)
