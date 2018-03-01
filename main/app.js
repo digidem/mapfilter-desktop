@@ -17,6 +17,20 @@ if (isDev) {
 }
 
 if (require('electron-squirrel-startup')) app.quit()
+let mainWindow = null
+
+const isSecondInstance = app.makeSingleInstance((commandLine, workingDirectory) => {
+  // Someone tried to run a second instance, we should focus our window.
+  if (mainWindow) {
+    if (mainWindow.isMinimized()) mainWindow.restore()
+    mainWindow.focus()
+  }
+})
+
+if (isSecondInstance) {
+  app.quit()
+  process.exit()
+}
 
 // Path to `userData`, operating system specific, see
 // https://github.com/atom/electron/blob/master/docs/api/app.md#appgetpathname
@@ -54,7 +68,7 @@ export {api, mediaServer, styleServer}
 function onAppReady () {
   if (--pending > 0) return
 
-  var win = setupWindow()
+  mainWindow = setupWindow()
 
   if (isDev) {
     installExtension(REACT_DEVELOPER_TOOLS)
@@ -65,13 +79,13 @@ function onAppReady () {
     //   .catch((err) => console.log('An error occurred: ', err))
   }
 
-  win.on('closed', function () {
-    win = null
+  mainWindow.on('closed', function () {
+    mainWindow = null
   })
 
   setupMenu()
 
-  setupFileIPCs(win, ipcMain, win.webContents)
+  setupFileIPCs(mainWindow, ipcMain, mainWindow.webContents)
 
   // if (fs.existsSync(path.join(userDataPath, 'mapfilter.mbtiles'))) {
   //   // workaround for pathnames containing spaces
