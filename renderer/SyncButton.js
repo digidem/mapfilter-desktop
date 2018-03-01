@@ -5,7 +5,7 @@ import SyncIcon from 'material-ui-icons/Sync'
 
 const SyncButton = ({onClick}) => (
   <IconButton onClick={onClick}>
-    <SyncIcon color='white' />
+    <SyncIcon />
   </IconButton>
 )
 
