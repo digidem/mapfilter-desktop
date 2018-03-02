@@ -4,7 +4,7 @@ import Button from 'material-ui/Button'
 import AddIcon from 'material-ui-icons/Add'
 
 const AddButton = ({onClick}) => (
-  <Button color='primary' onClick={onClick}>
+  <Button variant='fab' color='primary' onClick={onClick}>
     <AddIcon />
   </Button>
 )
