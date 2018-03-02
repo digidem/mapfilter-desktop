@@ -151,7 +151,7 @@ class FormListItem extends React.Component {
         <ListItemText primary={form.name} />
         {missing.length > 0 && (this.state.open ? <ExpandLess /> : <ExpandMore />)}
       </ListItem>
-      <Collapse in={missing.length > 0 && this.state.open} transitionDuration="auto" unmountOnExit>
+      <Collapse in={missing.length > 0 && this.state.open} unmountOnExit>
         {missing.map((a, idx) => (
           <ListItem key={idx}>
             <ListItemText inset primary={<span>Missing <code>{a}</code></span>} />
