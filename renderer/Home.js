@@ -16,8 +16,10 @@ import differenceBy from 'lodash/differenceBy'
 
 import getMediaFilename from './media_filename'
 import AddButton from './AddButton'
+import PublishButton from './PublishButton'
 import SyncButton from './SyncButton'
 import SyncDialog from './SyncDialog'
+import PublishDialog from './PublishDialog'
 import XFormUploader from './XFormUploader'
 
 import Title from './Title'
@@ -50,6 +52,10 @@ class Home extends React.Component {
 
   handleSyncButtonClick = () => {
     this.setState({showModal: 'sync'})
+  }
+
+  handlePublishButtonClick = () => {
+    this.setState({showModal: 'publish'})
   }
 
   handleDatasetChange = (e) => {
@@ -174,10 +180,16 @@ class Home extends React.Component {
           summary: 2
         }}
         actionButton={<AddButton onClick={this.handleAddButtonClick} />}
-        appBarButtons={[<SyncButton onClick={this.handleSyncButtonClick} />]}
+        appBarButtons={[
+          <SyncButton onClick={this.handleSyncButtonClick} />
+          <PublishButton onClick={this.handlePublishButtonClick} />
+        ]}
         appBarTitle={toolbarTitle} />
       <SyncDialog
         open={showModal === 'sync'}
+        onRequestClose={this.closeModal} />
+      <PublishDialog
+        open={showModal === 'publish'}
         onRequestClose={this.closeModal} />
       <XFormUploader
         open={showModal === 'add'}
