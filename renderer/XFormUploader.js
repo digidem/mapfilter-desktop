@@ -342,7 +342,7 @@ class XFormUploader extends React.Component {
         classes={{paper: classes.root}}
         open={open}
         fullWidth
-        onRequestClose={onRequestClose}>
+        onClose={onRequestClose}>
         <DialogTitle>
           <FormattedMessage {...messages.uploadFormData} />
         </DialogTitle>
