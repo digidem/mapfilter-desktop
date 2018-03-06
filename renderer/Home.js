@@ -115,7 +115,12 @@ class Home extends React.Component {
     })
   }
 
-  onUpload = (features) => {
+  onUpload = (err, features) => {
+    if (err) {
+      // TODO: show the user an error message about their bad upload
+      console.error(err)
+      return
+    }
     features.forEach(function (f) {
       f.properties = replaceProtocols(f.properties, mediaBaseUrl)
     })

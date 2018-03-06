@@ -251,8 +251,8 @@ class XFormUploader extends React.Component {
 
     Promise
       .all(forms.map(processForm))
-      .then((uploadedForms) => this.onUploadSuccess(uploadedForms))
-      .catch((err) => console.error(err))
+      .then(this.onUploadSuccess.bind(this))
+      .catch(this.onUploadFailure.bind(this))
 
     function processForm (form) {
       const formData = clone(form.data)
@@ -268,9 +268,15 @@ class XFormUploader extends React.Component {
     }
   }
 
+  onUploadFailure (err) {
+    this.resetUploader()
+    this.props.onUpload(err)
+    this.props.onRequestClose()
+  }
+
   onUploadSuccess (uploadedForms) {
     this.resetUploader()
-    this.props.onUpload(uploadedForms)
+    this.props.onUpload(null, uploadedForms)
     this.props.onRequestClose()
   }
 
