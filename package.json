@@ -93,7 +93,7 @@
     "object-assign": "^4.1.1",
     "once": "^1.4.0",
     "prop-types": "^15.6.0",
-    "pump": "^1.0.2",
+    "pump": "^1.0.3",
     "randombytes": "^2.0.3",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
@@ -101,6 +101,7 @@
     "react-mapfilter": "^1.0.0-beta.2",
     "through2": "^2.0.3",
     "traverse": "^0.6.6",
+    "websocket-stream": "^5.1.2",
     "xform-uploader": "^1.0.0"
   },
   "devDependencies": {

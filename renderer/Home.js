@@ -1,7 +1,7 @@
 import React from 'react'
 import MapFilter from 'react-mapfilter'
 import traverse from 'traverse'
-import {remote} from 'electron'
+import {ipcRenderer, remote} from 'electron'
 import toBuffer from 'blob-to-buffer'
 import assign from 'object-assign'
 import diff from 'lodash/difference'
@@ -135,6 +135,14 @@ class Home extends React.Component {
     }))
   }
 
+  replicateToServer = (server, done) => {
+    ipcRenderer.once('replicate-server-complete', function (event, err) {
+      console.log('got event in main')
+      return done(err)
+    })
+    ipcRenderer.send('replicate-server', server)
+  }
+
   uploadFile = (blob, filepath) => {
     return new Promise((resolve, reject) => {
       toBuffer(blob, (err, buf) => {
@@ -181,7 +189,7 @@ class Home extends React.Component {
         }}
         actionButton={<AddButton onClick={this.handleAddButtonClick} />}
         appBarButtons={[
-          <SyncButton onClick={this.handleSyncButtonClick} />
+          <SyncButton onClick={this.handleSyncButtonClick} />,
           <PublishButton onClick={this.handlePublishButtonClick} />
         ]}
         appBarTitle={toolbarTitle} />
@@ -189,6 +197,7 @@ class Home extends React.Component {
         open={showModal === 'sync'}
         onRequestClose={this.closeModal} />
       <PublishDialog
+        doPublish={this.replicateToServer}
         open={showModal === 'publish'}
         onRequestClose={this.closeModal} />
       <XFormUploader

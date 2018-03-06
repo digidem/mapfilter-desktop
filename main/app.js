@@ -7,6 +7,9 @@ import Config from 'electron-config'
 import mkdirp from 'mkdirp'
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer'
 import getPorts from 'get-ports'
+import url from 'url'
+import pump from 'pump'
+import websocket from 'websocket-stream'
 import collect from 'collect-stream'
 import JSONStream from 'JSONStream'
 import isDev from 'electron-is-dev'
@@ -138,6 +141,7 @@ function setupFileIPCs (window, incomingChannel, outgoingChannel) {
   incomingChannel.on('save-file', onSaveFile)
   incomingChannel.on('open-file', onOpenFile)
   incomingChannel.on('replicate-usb', onReplicateUsb)
+  incomingChannel.on('replicate-server', onReplicateServer)
 
   function onSaveFile () {
     var ext = 'mapfilter'
@@ -182,5 +186,17 @@ function setupFileIPCs (window, incomingChannel, outgoingChannel) {
     })
     win.once('ready-to-show', () => win.show())
     win.loadURL('file://' + path.resolve(__dirname, 'replicate_usb.html'))
+  }
+
+  function onReplicateServer (event, server) {
+    var u = url.parse(server)
+    var ws = websocket('ws://' + u.host + '/osm')
+    var stream = api.createOsmReplicationStream()
+    pump(stream, ws, stream, done)
+    function done (err) {
+      console.log('done replicating', err)
+      event.sender.send('replicate-server-complete', err)
+    }
+
   }
 }
