@@ -22,7 +22,7 @@ import XFormUploader from './XFormUploader'
 
 import Title from './Title'
 
-const {api, mediaServer, styleServer} = remote.require(path.resolve(__dirname, '../main/app.js'))
+const {api, mediaServer, styleServer, getObservations} = remote.require(path.resolve(__dirname, '../main/app.js'))
 
 const mediaServerPort = mediaServer.address().port
 const styleServerPort = styleServer.address().port
@@ -89,13 +89,11 @@ class Home extends React.Component {
   }
 
   getFeatures () {
-    api.observationList((err, features) => {
+    getObservations((err, features) => {
       if (err) return console.error(err)
       features = JSON.parse(features)
       this._seen = new Set(features.map(f => f.id))
-      features.forEach(function (f) {
-        f.properties = replaceProtocols(f.properties, mediaBaseUrl)
-      })
+      features = features.map(observationToFeature)
       this.setState(state => ({
         featuresByFormId: features.reduce(formIdReducer, assign({}, state.featuresByFormId))
       }))
@@ -117,7 +115,12 @@ class Home extends React.Component {
     })
   }
 
-  onUpload = (features) => {
+  onUpload = (err, features) => {
+    if (err) {
+      // TODO: show the user an error message about their bad upload
+      console.error(err)
+      return
+    }
     features.forEach(function (f) {
       f.properties = replaceProtocols(f.properties, mediaBaseUrl)
     })
@@ -226,5 +229,29 @@ function replaceProtocols (obj, baseUrl) {
     }
   })
 }
+
+function observationToFeature (obs, id) {
+  var feature = {
+    id: id,
+    type: 'Feature',
+    geometry: null,
+    properties: obs.tags
+  }
+  if (obs.lon && obs.lat) {
+    feature.geometry = {
+      type: 'Point',
+      coordinates: [obs.lon, obs.lat]
+    }
+  }
+  if (typeof feature.properties.public === 'undefined') {
+    feature.properties.public = false
+  }
+  if (!feature.properties.summary) {
+    feature.properties.summary = ' '
+  }
+  feature.properties = replaceProtocols(feature.properties, mediaBaseUrl)
+  return feature
+}
+
 
 module.exports = Home
