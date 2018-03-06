@@ -151,7 +151,7 @@ class FormListItem extends React.Component {
         <ListItemText primary={form.name} />
         {missing.length > 0 && (this.state.open ? <ExpandLess /> : <ExpandMore />)}
       </ListItem>
-      <Collapse in={missing.length > 0 && this.state.open} transitionDuration="auto" unmountOnExit>
+      <Collapse in={missing.length > 0 && this.state.open} unmountOnExit>
         {missing.map((a, idx) => (
           <ListItem key={idx}>
             <ListItemText inset primary={<span>Missing <code>{a}</code></span>} />
@@ -170,7 +170,7 @@ const FormList = ({forms}) => (
 
 const UploadButton = ({uploading, onClick, disabled}) => (
   <Button
-    raised
+    variant='raised'
     color='primary'
     onClick={uploading ? noop : onClick}
     disabled={disabled}>
@@ -180,7 +180,7 @@ const UploadButton = ({uploading, onClick, disabled}) => (
 
 const CancelButton = ({onClick}) => (
   <Button
-    raised
+    variant='raised'
     onClick={onClick}>
     <FormattedMessage {...messages.cancel} />
   </Button>
@@ -194,7 +194,7 @@ const DragDropArea = ({onChange, classes}) => (
     <DialogContentText className={classes.uploadBoxText}>— or —</DialogContentText>
     <SelectFolderButton
       directory
-      raised
+      variant='raised'
       classes={classes}
       onChange={onChange}>
       <FormattedMessage {...messages.selectFolder} />
@@ -222,7 +222,7 @@ class SelectFolderButton extends React.Component {
         multiple />
       <label htmlFor='file'>
         <Button
-          raised={raised}
+          variant={raised ? 'raised' : 'flat'}
           component='span'
           className={classes.selectFolderButton}
           disabled={disabled}>
@@ -342,7 +342,7 @@ class XFormUploader extends React.Component {
         classes={{paper: classes.root}}
         open={open}
         fullWidth
-        onRequestClose={onRequestClose}>
+        onClose={onRequestClose}>
         <DialogTitle>
           <FormattedMessage {...messages.uploadFormData} />
         </DialogTitle>

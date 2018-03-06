@@ -31,8 +31,10 @@ const styles = {
 }
 
 const Title = ({datasets, activeDataset, onChange, classes}) => (
-  <Typography type='title' color='inherit' className={classes.root}>
-    TiziiTizii<span className={classes.sep}>&nbsp;/&nbsp;</span>
+  <div>
+    <Typography type='title' color='inherit' className={classes.root}>
+      TiziiTizii<span className={classes.sep}>&nbsp;/&nbsp;</span>
+    </Typography>
     <Select
       value={activeDataset}
       onChange={onChange}
@@ -45,7 +47,7 @@ const Title = ({datasets, activeDataset, onChange, classes}) => (
       input={<Input />}>
       {datasets.map(d => <MenuItem key={d} value={d}>{d}</MenuItem>)}
     </Select>
-  </Typography>
+  </div>
 )
 
 Title.propTypes = {
