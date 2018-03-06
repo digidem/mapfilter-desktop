@@ -7,10 +7,12 @@ import Config from 'electron-config'
 import mkdirp from 'mkdirp'
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer'
 import getPorts from 'get-ports'
+import collect from 'collect-stream'
+import JSONStream from 'JSONStream'
 import isDev from 'electron-is-dev'
+import MapFilterDb from 'mapfilter-db'
 import createMediaServer from './media_server'
 import createStyleServer from './style_server'
-import MapFilterDb from 'mapfilter-db'
 
 if (isDev) {
   require('electron-debug')()
@@ -63,7 +65,11 @@ getPorts([8000, 8100], function (err, ports) {
   onAppReady()
 })
 
-export {api, mediaServer, styleServer}
+function getObservations (cb) {
+  collect(api.observationStream().pipe(JSONStream.stringify()), cb)
+}
+
+export {api, mediaServer, styleServer, getObservations}
 
 function onAppReady () {
   if (--pending > 0) return

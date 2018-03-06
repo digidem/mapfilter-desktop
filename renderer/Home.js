@@ -22,7 +22,7 @@ import XFormUploader from './XFormUploader'
 
 import Title from './Title'
 
-const {api, mediaServer, styleServer} = remote.require(path.resolve(__dirname, '../main/app.js'))
+const {api, mediaServer, styleServer, getObservations} = remote.require(path.resolve(__dirname, '../main/app.js'))
 
 const mediaServerPort = mediaServer.address().port
 const styleServerPort = styleServer.address().port
@@ -89,14 +89,11 @@ class Home extends React.Component {
   }
 
   getFeatures () {
-    api.observationList((err, features) => {
+    getObservations((err, features) => {
       if (err) return console.error(err)
-      console.log(features)
+      features = JSON.parse(features)
       this._seen = new Set(features.map(f => f.id))
-      features.forEach(function (f) {
-        f = observationToFeature(f)
-        f.properties = replaceProtocols(f.properties, mediaBaseUrl)
-      })
+      features = features.map(observationToFeature)
       this.setState(state => ({
         featuresByFormId: features.reduce(formIdReducer, assign({}, state.featuresByFormId))
       }))
@@ -247,7 +244,7 @@ function observationToFeature (obs, id) {
   if (!feature.properties.summary) {
     feature.properties.summary = ' '
   }
-  f.properties = replaceProtocols(f.properties, mediaBaseUrl)
+  feature.properties = replaceProtocols(feature.properties, mediaBaseUrl)
   return feature
 }
 
