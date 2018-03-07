@@ -72,7 +72,7 @@ function getObservations (cb) {
   collect(api.observationStream().pipe(JSONStream.stringify()), cb)
 }
 
-export {api, mediaServer, styleServer, getObservations}
+export {appConfig, api, mediaServer, styleServer, getObservations}
 
 function onAppReady () {
   if (--pending > 0) return

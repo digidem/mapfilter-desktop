@@ -96,7 +96,7 @@ class PublishDialog extends React.Component {
 
   render () {
     let cardBody
-    const {open, onRequestClose} = this.props
+    const {open, server, onRequestClose} = this.props
     const {progress} = this.state
 
     switch (progress) {
@@ -104,7 +104,7 @@ class PublishDialog extends React.Component {
         cardBody = (
           <FormControl>
             <InputLabel htmlFor="name-simple">Server</InputLabel>
-            <Input id="name-simple" value={this.state.server} onChange={this.handleChange} />
+            <Input id="name-simple" value={server} onChange={this.handleChange} />
           </FormControl>
         )
         break

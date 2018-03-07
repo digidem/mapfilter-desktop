@@ -24,7 +24,7 @@ import XFormUploader from './XFormUploader'
 
 import Title from './Title'
 
-const {api, mediaServer, styleServer, getObservations} = remote.require(path.resolve(__dirname, '../main/app.js'))
+const {appConfig, api, mediaServer, styleServer, getObservations} = remote.require(path.resolve(__dirname, '../main/app.js'))
 
 const mediaServerPort = mediaServer.address().port
 const styleServerPort = styleServer.address().port
@@ -136,6 +136,7 @@ class Home extends React.Component {
   }
 
   replicateToServer = (server, done) => {
+    appConfig.set('publish-server', server)
     ipcRenderer.once('replicate-server-complete', function (event, err) {
       console.log('got event in main')
       return done(err)
@@ -197,6 +198,7 @@ class Home extends React.Component {
         open={showModal === 'sync'}
         onRequestClose={this.closeModal} />
       <PublishDialog
+        server={appConfig.get('publish-server')}
         doPublish={this.replicateToServer}
         open={showModal === 'publish'}
         onRequestClose={this.closeModal} />
