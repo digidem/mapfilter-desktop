@@ -191,13 +191,17 @@ function setupFileIPCs (window, incomingChannel, outgoingChannel) {
   function onReplicateServer (event, server) {
     var u = url.parse(server)
     var ws = websocket('ws://' + u.host + '/osm')
-    var stream = api.createOsmReplicationStream()
-    pump(stream, ws, stream, done)
-    function done (err) {
-      if (!err) appConfig.set('publish-server', server)
-      console.log('done replicating', err)
-      event.sender.send('replicate-server-complete', err)
-    }
 
+    var osm = api.createOsmReplicationStream()
+    pump(osm, ws, osm, (err) => {
+      if (!err) appConfig.set('publish-server', server)
+      var media = api.createMediaReplicationStream()
+      var ws2 = websocket('ws://' + u.host + '/media')
+      pump(media, ws2, media, (err) => {
+        if (err) console.error('error on media replication', err)
+        console.log('done replicating', err)
+        event.sender.send('replicate-server-complete', err)
+      })
+    })
   }
 }
