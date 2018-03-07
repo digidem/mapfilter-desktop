@@ -7,7 +7,8 @@ import Dialog, {
 } from 'material-ui/Dialog'
 
 import Input, { InputLabel } from 'material-ui/Input';
-import { FormControl, FormHelperText } from 'material-ui/Form';
+import { FormControl } from 'material-ui/Form'
+import TextField from 'material-ui/TextField';
 import { remote } from 'electron'
 import { LinearProgress } from 'material-ui/Progress'
 import { defineMessages, FormattedMessage } from 'react-intl'
@@ -82,9 +83,18 @@ class PublishDialog extends React.Component {
 
   handlePublishButton = () => {
     var self = this
+    this.setState({progress: 1})
     this.props.doPublish(this.state.server, function done (err) {
-      if (err) return alert(err)
+      if (err) return self.handleError(err)
+      self.setState({progress: 0})
       self.props.onRequestClose()
+    })
+  }
+
+  handleError = (err) => {
+    this.setState({
+      error: err,
+      progress: 0
     })
   }
 
@@ -97,14 +107,20 @@ class PublishDialog extends React.Component {
   render () {
     let cardBody
     const {open, server, onRequestClose} = this.props
-    const {progress} = this.state
+    const {progress, error} = this.state
 
     switch (progress) {
       case 0: // not started
         cardBody = (
           <FormControl>
-            <InputLabel htmlFor="name-simple">Server</InputLabel>
-            <Input id="name-simple" value={server} onChange={this.handleChange} />
+            <TextField
+            error={error ? true : false}
+            id="server-field"
+            label="Server"
+            onChange={this.handleChange}
+            defaultValue={server}
+            margin="normal"
+            />
           </FormControl>
         )
         break
