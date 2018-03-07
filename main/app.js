@@ -3,7 +3,7 @@
 import http from 'http'
 import path from 'path'
 import {app, Menu, BrowserWindow, ipcMain, dialog} from 'electron'
-import Config from 'electron-config'
+import Config from 'electron-store'
 import mkdirp from 'mkdirp'
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer'
 import getPorts from 'get-ports'
