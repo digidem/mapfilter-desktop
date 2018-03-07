@@ -194,6 +194,7 @@ function setupFileIPCs (window, incomingChannel, outgoingChannel) {
     var stream = api.createOsmReplicationStream()
     pump(stream, ws, stream, done)
     function done (err) {
+      if (!err) appConfig.set('publish-server', server)
       console.log('done replicating', err)
       event.sender.send('replicate-server-complete', err)
     }

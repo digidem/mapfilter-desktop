@@ -136,9 +136,7 @@ class Home extends React.Component {
   }
 
   replicateToServer = (server, done) => {
-    appConfig.set('publish-server', server)
     ipcRenderer.once('replicate-server-complete', function (event, err) {
-      console.log('got event in main')
       return done(err)
     })
     ipcRenderer.send('replicate-server', server)
