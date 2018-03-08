@@ -16,6 +16,7 @@ import differenceBy from 'lodash/differenceBy'
 
 import getMediaFilename from './media_filename'
 import AddButton from './AddButton'
+import Message from './Message'
 import PublishButton from './PublishButton'
 import SyncButton from './SyncButton'
 import SyncDialog from './SyncDialog'
@@ -72,17 +73,17 @@ class Home extends React.Component {
 
     deleted.forEach(f => {
       api.observationDelete(f.id, (err) => {
-        if (err) console.error(err)
+        if (err) return this.handleError(err)
       })
     })
     added.forEach(f => {
       api.observationCreate(f, (err) => {
-        if (err) console.error(err)
+        if (err) return this.handleError(err)
       })
     })
     updated.forEach(f => {
       api.observationUpdate(f, (err) => {
-        if (err) console.error(err)
+        if (err) return this.handleError(err)
       })
     })
     const newFeaturesByFormId = assign({}, this.state.featuresByFormId)
@@ -96,7 +97,7 @@ class Home extends React.Component {
 
   getFeatures () {
     getObservations((err, features) => {
-      if (err) return console.error(err)
+      if (err) return this.handleError(err)
       features = JSON.parse(features)
       this._seen = new Set(features.map(f => f.id))
       features = features.map(observationToFeature)
@@ -122,11 +123,7 @@ class Home extends React.Component {
   }
 
   onUpload = (err, features) => {
-    if (err) {
-      // TODO: show the user an error message about their bad upload
-      console.error(err)
-      return
-    }
+    if (err) return this.handleError(err)
     features.forEach(function (f) {
       f.properties = replaceProtocols(f.properties, mediaBaseUrl)
     })
@@ -135,8 +132,20 @@ class Home extends React.Component {
     }))
   }
 
+  handleError = (err) => {
+    // TODO: internationalize errors
+    var message = err.toString()
+    this.sendAlertMessage(message)
+    console.error(message)
+  }
+
   replicateToServer = (server, done) => {
+    var self = this
     ipcRenderer.once('replicate-server-complete', function (event, err) {
+      if (err) {
+        if (err.code === "ECONNREFUSED")
+        self.handleError(new Error('Cant find the server. Is it correct?'))
+      }
       return done(err)
     })
     ipcRenderer.send('replicate-server', server)
@@ -161,14 +170,23 @@ class Home extends React.Component {
     })
   }
 
+  sendAlertMessage = (alertMessage) => {
+    var self = this
+    self.setState({alertMessage})
+    setTimeout(function () {
+      self.setState({alertMessage: false})
+    }, 5000)
+  }
+
   render () {
-    const {featuresByFormId, formId, showModal, mapStyle} = this.state
+    const {featuresByFormId, formId, showModal, mapStyle, alertMessage} = this.state
     const toolbarTitle = <Title
       datasets={Object.keys(featuresByFormId)}
       activeDataset={formId}
       onChange={this.handleDatasetChange} />
 
     return (<div>
+      <Message message={alertMessage} />
       <MapFilter
         mapStyle={styleUrl}
         features={featuresByFormId[formId] || []}

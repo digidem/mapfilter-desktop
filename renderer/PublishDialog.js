@@ -51,9 +51,10 @@ const CancelButton = ({onClick, disabled}) => (
   </Button>
 )
 
-const GoButton = ({onClick}) => (
+const GoButton = ({onClick, disabled}) => (
   <Button
     style={styles.button}
+    disabled={disabled}
     onClick={onClick}
     variant='raised'
     autoFocus
@@ -135,7 +136,7 @@ class PublishDialog extends React.Component {
         {cardBody}
       </DialogContent>
       <DialogActions>
-        <GoButton onClick={this.handlePublishButton} />
+        <GoButton onClick={this.handlePublishButton} disabled={progress > 0} />
         <CancelButton onClick={onRequestClose} disabled={progress > 0} />
       </DialogActions>
     </Dialog>
