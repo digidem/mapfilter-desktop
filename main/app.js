@@ -34,6 +34,11 @@ if (isSecondInstance) {
   process.exit()
 }
 
+// Quit when all windows are closed.
+app.on('window-all-closed', function () {
+  app.quit()
+})
+
 // Path to `userData`, operating system specific, see
 // https://github.com/atom/electron/blob/master/docs/api/app.md#appgetpathname
 var userDataPath = path.join(app.getPath('userData'), 'org.digital-democracy.MapFilter')
