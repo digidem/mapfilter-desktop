@@ -81,6 +81,31 @@ module.exports = function (app) {
     ]
   },
   {
+    label: 'Sync',
+    submenu: [
+      {
+        label: 'Publish to Website',
+        click: function () {
+          var win = BrowserWindow.getFocusedWindow()
+          if (win) {
+            win.toggleDevTools()
+            win.webContents.send('show', 'publish')
+          }
+        }
+      },
+      {
+        label: 'Sync with Device...',
+        click: function () {
+          var win = BrowserWindow.getFocusedWindow()
+          if (win) {
+            win.toggleDevTools()
+            win.webContents.send('show', 'sync')
+          }
+        }
+      }
+    ]
+  },
+  {
     label: 'View',
     submenu: [
       {

@@ -3,10 +3,13 @@
 import http from 'http'
 import path from 'path'
 import {app, Menu, BrowserWindow, ipcMain, dialog} from 'electron'
-import Config from 'electron-config'
+import Config from 'electron-store'
 import mkdirp from 'mkdirp'
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer'
 import getPorts from 'get-ports'
+import url from 'url'
+import pump from 'pump'
+import websocket from 'websocket-stream'
 import collect from 'collect-stream'
 import JSONStream from 'JSONStream'
 import isDev from 'electron-is-dev'
@@ -74,7 +77,7 @@ function getObservations (cb) {
   collect(api.observationStream().pipe(JSONStream.stringify()), cb)
 }
 
-export {api, mediaServer, styleServer, getObservations}
+export {appConfig, api, mediaServer, styleServer, getObservations}
 
 function onAppReady () {
   if (--pending > 0) return
@@ -143,6 +146,7 @@ function setupFileIPCs (window, incomingChannel, outgoingChannel) {
   incomingChannel.on('save-file', onSaveFile)
   incomingChannel.on('open-file', onOpenFile)
   incomingChannel.on('replicate-usb', onReplicateUsb)
+  incomingChannel.on('replicate-server', onReplicateServer)
 
   function onSaveFile () {
     var ext = 'mapfilter'
@@ -187,5 +191,22 @@ function setupFileIPCs (window, incomingChannel, outgoingChannel) {
     })
     win.once('ready-to-show', () => win.show())
     win.loadURL('file://' + path.resolve(__dirname, 'replicate_usb.html'))
+  }
+
+  function onReplicateServer (event, server) {
+    var u = url.parse(server)
+    var ws = websocket('ws://' + u.host + '/osm')
+
+    var osm = api.createOsmReplicationStream()
+    pump(osm, ws, osm, (err) => {
+      if (!err) appConfig.set('publish-server', server)
+      var media = api.createMediaReplicationStream()
+      var ws2 = websocket('ws://' + u.host + '/media')
+      pump(media, ws2, media, (err) => {
+        if (err) console.error('error on media replication', err)
+        console.log('done replicating', err)
+        event.sender.send('replicate-server-complete', err)
+      })
+    })
   }
 }
