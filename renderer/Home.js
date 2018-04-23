@@ -17,7 +17,6 @@ import differenceBy from 'lodash/differenceBy'
 import getMediaFilename from './media_filename'
 import AddButton from './AddButton'
 import Message from './Message'
-import PublishButton from './PublishButton'
 import SyncButton from './SyncButton'
 import SyncDialog from './SyncDialog'
 import PublishDialog from './PublishDialog'
@@ -36,7 +35,8 @@ const styleUrl = `http://127.0.0.1:${styleServerPort}/style.json`
 class Home extends React.Component {
   constructor (props) {
     super(props)
-    this.state = {
+    var self = this
+    self.state = {
       featuresByFormId: {
         monitoring: []
       },
@@ -44,7 +44,11 @@ class Home extends React.Component {
       showModal: false,
       mapStyle: styleUrl
     }
-    this.getFeatures()
+
+    ipcRenderer.on('show', function (_, value) {
+      self.setState({showModal: value})
+    })
+    self.getFeatures()
   }
 
   handleAddButtonClick = () => {
@@ -53,10 +57,6 @@ class Home extends React.Component {
 
   handleSyncButtonClick = () => {
     this.setState({showModal: 'sync'})
-  }
-
-  handlePublishButtonClick = () => {
-    this.setState({showModal: 'publish'})
   }
 
   handleDatasetChange = (e) => {
@@ -206,8 +206,7 @@ class Home extends React.Component {
         }}
         actionButton={<AddButton onClick={this.handleAddButtonClick} />}
         appBarButtons={[
-          <SyncButton onClick={this.handleSyncButtonClick} />,
-          <PublishButton onClick={this.handlePublishButtonClick} />
+          <SyncButton onClick={this.handleSyncButtonClick} />
         ]}
         appBarTitle={toolbarTitle} />
       <SyncDialog
