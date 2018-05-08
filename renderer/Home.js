@@ -1,3 +1,4 @@
+import LayerControl from '@digidem/mapbox-gl-layers'
 import React from 'react'
 import MapFilter from 'react-mapfilter'
 import traverse from 'traverse'
@@ -185,10 +186,18 @@ class Home extends React.Component {
       activeDataset={formId}
       onChange={this.handleDatasetChange} />
 
+    var overlays = [{
+      name: 'National Parks',
+      ids: ['national_park']
+    }]
+
+    var layerControl = new LayerControl({overlays})
+
     return (<div>
       <Message message={alertMessage} />
       <MapFilter
         mapStyle={styleUrl}
+        mapControls={[layerControl]}
         features={featuresByFormId[formId] || []}
         onChangeFeatures={this.handleChangeFeatures}
         fieldTypes={{
