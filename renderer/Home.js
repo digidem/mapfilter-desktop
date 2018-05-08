@@ -14,6 +14,7 @@ import {
 import xor from 'lodash/xor'
 import differenceBy from 'lodash/differenceBy'
 
+import translations from './translations'
 import getMediaFilename from './media_filename'
 import AddButton from './AddButton'
 import Message from './Message'
@@ -190,6 +191,7 @@ class Home extends React.Component {
       <MapFilter
         mapStyle={styleUrl}
         features={featuresByFormId[formId] || []}
+        translations={translations()}
         onChangeFeatures={this.handleChangeFeatures}
         fieldTypes={{
           impacts: FIELD_TYPE_SPACE_DELIMITED,
