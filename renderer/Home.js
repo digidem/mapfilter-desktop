@@ -37,10 +37,8 @@ class Home extends React.Component {
     super(props)
     var self = this
     self.state = {
-      featuresByFormId: {
-        monitoring: []
-      },
-      formId: 'monitoring',
+      featuresByFormId: {},
+      formId: null,
       showModal: false,
       mapStyle: styleUrl
     }
@@ -101,9 +99,15 @@ class Home extends React.Component {
       features = JSON.parse(features)
       this._seen = new Set(features.map(f => f.id))
       features = features.map(observationToFeature)
-      this.setState(state => ({
-        featuresByFormId: features.reduce(formIdReducer, assign({}, state.featuresByFormId))
-      }))
+      this.updateFeatures(features)
+    })
+  }
+
+  updateFeatures (features) {
+    this.setState(state => {
+      const featuresByFormId = features.reduce(formIdReducer, assign({}, state.featuresByFormId))
+      const formId = state.formId || Object.keys(featuresByFormId)[0]
+      return { featuresByFormId, formId }
     })
   }
 
@@ -127,9 +131,7 @@ class Home extends React.Component {
     features.forEach(function (f) {
       f.properties = replaceProtocols(f.properties, mediaBaseUrl)
     })
-    this.setState(state => ({
-      featuresByFormId: features.reduce(formIdReducer, assign({}, state.featuresByFormId))
-    }))
+    this.updateFeatures(features)
   }
 
   handleError = (err) => {
