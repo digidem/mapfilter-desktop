@@ -31,8 +31,8 @@ const styles = {
 }
 
 const Title = ({datasets, activeDataset, onChange, classes}) => (
-  <div>
-    <Typography type='title' color='inherit' className={classes.root}>
+  <div className={classes.root}>
+    <Typography variant='title' color='inherit'>
       TiziiTizii<span className={classes.sep}>&nbsp;/&nbsp;</span>
     </Typography>
     <Select
