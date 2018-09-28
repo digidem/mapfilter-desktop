@@ -1,10 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Input from 'material-ui/Input'
-import { MenuItem } from 'material-ui/Menu'
-import Select from 'material-ui/Select'
-import Typography from 'material-ui/Typography'
-import { withStyles } from 'material-ui/styles'
+import Input from '@material-ui/core/Input'
+import MenuItem from '@material-ui/core/MenuItem'
+import Select from '@material-ui/core/Select'
+import Typography from '@material-ui/core/Typography'
+import { withStyles } from '@material-ui/core/styles'
 
 const styles = {
   root: {
@@ -30,12 +30,12 @@ const styles = {
   }
 }
 
-const Title = ({datasets, activeDataset, onChange, classes}) => (
+const Title = ({datasets = [], activeDataset, onChange, classes}) => (
   <div className={classes.root}>
     <Typography variant='title' color='inherit'>
-      TiziiTizii<span className={classes.sep}>&nbsp;/&nbsp;</span>
+      TiziiTizii {datasets.length ? <span className={classes.sep}>&nbsp;/&nbsp;</span> : ''}
     </Typography>
-    <Select
+    {datasets.length ? <Select
       value={activeDataset}
       onChange={onChange}
       MenuProps={{MenuListProps: {dense: true}}}
@@ -46,7 +46,7 @@ const Title = ({datasets, activeDataset, onChange, classes}) => (
       disableUnderline
       input={<Input />}>
       {datasets.map(d => <MenuItem key={d} value={d}>{d}</MenuItem>)}
-    </Select>
+    </Select> : null}
   </div>
 )
 

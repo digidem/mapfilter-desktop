@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import IconButton from 'material-ui/IconButton'
-import SyncIcon from 'material-ui-icons/Sync'
+import IconButton from '@material-ui/core/IconButton'
+import SyncIcon from '@material-ui/icons/Sync'
 
 const SyncButton = ({onClick}) => (
   <IconButton onClick={onClick}>

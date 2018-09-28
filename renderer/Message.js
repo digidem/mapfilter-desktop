@@ -1,5 +1,5 @@
 import React from 'react'
-import Snackbar from 'material-ui/Snackbar';
+import Snackbar from '@material-ui/core/Snackbar';
 
 class PositionedSnackbar extends React.Component {
 
@@ -18,9 +18,9 @@ class PositionedSnackbar extends React.Component {
     return (
       <Snackbar
       anchorOrigin={{vertical: 'center', horizontal: 'center'}}
-      open={open || message}
+      open={open || !!message}
       onClose={this.handleClose}
-      SnackbarContentProps={{
+      ContentProps={{
         'aria-describedby': 'message-id',
       }}
       message={<span id="message-id">{message}</span>}

@@ -1,18 +1,16 @@
 import React from 'react'
-import Dialog, {
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from 'material-ui/Dialog'
+import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogContentText from '@material-ui/core/DialogContentText'
+import DialogTitle from '@material-ui/core/DialogTitle'
 
-import Input, { InputLabel } from 'material-ui/Input';
-import { FormControl } from 'material-ui/Form'
-import TextField from 'material-ui/TextField';
+import FormControl from '@material-ui/core/FormControl'
+import TextField from '@material-ui/core/TextField';
 import { remote } from 'electron'
-import { LinearProgress } from 'material-ui/Progress'
+import LinearProgress from '@material-ui/core/LinearProgress'
 import { defineMessages, FormattedMessage } from 'react-intl'
-import Button from 'material-ui/Button'
+import Button from '@material-ui/core/Button'
 import path from 'path'
 const {api} = remote.require(path.resolve(__dirname, '../main/app.js'))
 

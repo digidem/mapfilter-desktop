@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import IconButton from 'material-ui/IconButton'
-import DevicesButton from 'material-ui-icons/ImportantDevices'
+import IconButton from '@material-ui/core/IconButton'
+import DevicesButton from '@material-ui/icons/ImportantDevices'
 
 const PublishButton = ({onClick}) => (
   <IconButton onClick={onClick}>

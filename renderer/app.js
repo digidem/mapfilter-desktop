@@ -2,9 +2,9 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import {addLocaleData, IntlProvider} from 'react-intl'
 import enLocaleData from 'react-intl/locale-data/en'
-import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles'
-import blue from 'material-ui/colors/blue'
-import pink from 'material-ui/colors/pink'
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
+import blue from '@material-ui/core/colors/blue'
+import pink from '@material-ui/core/colors/pink'
 
 import Home from './Home'
 

@@ -1,12 +1,11 @@
 import React from 'react'
-import Dialog, {
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from 'material-ui/Dialog'
-import Button from 'material-ui/Button'
-import { LinearProgress } from 'material-ui/Progress'
+import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogContentText from '@material-ui/core/DialogContentText'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import Button from '@material-ui/core/Button'
+import LinearProgress from '@material-ui/core/LinearProgress'
 import { remote } from 'electron'
 import mkdirp from 'mkdirp'
 import path from 'path'
