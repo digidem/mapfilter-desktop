@@ -8,8 +8,8 @@ module.exports = function getMediaFilename (filename, buf, opts, cb) {
 
   getFileMetadata(buf, function (_, meta) {
     const date = meta &&
-      (meta.exif && meta.exif.DateTimeOriginal) ||
-      (meta.image && meta.image.ModifyDate)
+      ((meta.exif && meta.exif.DateTimeOriginal) ||
+      (meta.image && meta.image.ModifyDate))
     const name = getName(filename, date || opts.lastModifiedDate)
     cb(null, name)
   })
