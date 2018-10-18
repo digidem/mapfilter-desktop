@@ -3,7 +3,7 @@
 
 # Test against this version of Node.js
 environment:
-  nodejs_version: "6"
+  nodejs_version: "8"
   GITHUB_TOKEN:
     secure: fxs30i1bh6CeJPKr3/shIxXr73kd0RgEJh9VQ6zEVe7hoaRNVmSaAnj4V/MwbY+F
 
