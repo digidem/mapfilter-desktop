@@ -67,7 +67,11 @@ class Home extends React.Component {
     const xorFeatures = xor(changedFeatures, features)
     const deleted = differenceBy(xorFeatures, changedFeatures, 'id')
     const added = differenceBy(xorFeatures, features, 'id')
-    const updated = xorFeatures.filter(f => added.indexOf(f) === -1 && deleted.indexOf(f) === -1)
+    const updated = xorFeatures.filter(f => {
+      return added.indexOf(f) === -1 &&
+        deleted.indexOf(f) === -1 &&
+        features.indexOf(f) === -1
+    })
 
     deleted.forEach(f => {
       api.observationDelete(f.id, (err) => {
