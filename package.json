@@ -98,7 +98,7 @@
     "randombytes": "^2.0.6",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
-    "react-intl": "^2.7.1",
+    "react-intl": "^2.7.2",
     "react-mapfilter": "^1.2.6",
     "through2": "^2.0.3",
     "traverse": "^0.6.6",
