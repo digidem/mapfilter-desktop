@@ -102,6 +102,7 @@
     "react-mapfilter": "^1.2.10",
     "through2": "^2.0.3",
     "traverse": "^0.6.6",
+    "vips-resizer": "^2.1.0",
     "websocket-stream": "^5.1.2",
     "xform-uploader": "^1.0.0"
   },

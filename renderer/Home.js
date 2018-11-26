@@ -24,13 +24,18 @@ import XFormUploader from './XFormUploader'
 
 import Title from './Title'
 
-const {appConfig, api, mediaServer, styleServer, getObservations} = remote.require(path.resolve(__dirname, '../main/app.js'))
+const {appConfig, api, mediaServer, styleServer, resizeServer, getObservations} = remote.require(path.resolve(__dirname, '../main/app.js'))
 
 const mediaServerPort = mediaServer.address().port
 const styleServerPort = styleServer.address().port
+const resizeServerPort = resizeServer.address().port
 
 const mediaBaseUrl = `http://127.0.0.1:${mediaServerPort}/media/`
 const styleUrl = `http://127.0.0.1:${styleServerPort}/style.json`
+
+function resizer (url, size) {
+  return `http://127.0.0.1:${resizeServerPort}/${size}/${size}/${url}`
+}
 
 class Home extends React.Component {
   constructor (props) {
@@ -210,6 +215,7 @@ class Home extends React.Component {
           public: 1,
           summary: 2
         }}
+        resizer={resizer}
         actionButton={<AddButton onClick={this.handleAddButtonClick} />}
         appBarButtons={[
           <SyncButton onClick={this.handleSyncButtonClick} />
@@ -274,9 +280,9 @@ function replaceProtocols (obj, baseUrl) {
   })
 }
 
-function observationToFeature (obs, id) {
+function observationToFeature (obs) {
   var feature = {
-    id: id,
+    id: obs.id,
     type: 'Feature',
     geometry: null,
     properties: obs.tags

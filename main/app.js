@@ -16,6 +16,7 @@ import isDev from 'electron-is-dev'
 import MapFilterDb from 'mapfilter-db'
 import createMediaServer from './media_server'
 import createStyleServer from './style_server'
+import resizer from 'vips-resizer'
 
 if (isDev) {
   require('electron-debug')()
@@ -65,11 +66,13 @@ var api = new MapFilterDb(dbPath)
 
 const mediaServer = http.createServer(createMediaServer(api.media, '/media'))
 const styleServer = http.createServer(createStyleServer(stylePath))
+const resizeServer = http.createServer(resizer)
 
-getPorts([8000, 8100], function (err, ports) {
+getPorts([8000, 8100, 8200], function (err, ports) {
   if (err) throw new Error('could not open servers')
   mediaServer.listen(ports[0])
   styleServer.listen(ports[1])
+  resizeServer.listen(ports[2])
   onAppReady()
 })
 
@@ -77,7 +80,7 @@ function getObservations (cb) {
   collect(api.observationStream().pipe(JSONStream.stringify()), cb)
 }
 
-export {appConfig, api, mediaServer, styleServer, getObservations}
+export {appConfig, api, mediaServer, styleServer, resizeServer, getObservations}
 
 function onAppReady () {
   if (--pending > 0) return
