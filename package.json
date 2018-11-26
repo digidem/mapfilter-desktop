@@ -99,7 +99,7 @@
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "react-intl": "^2.7.2",
-    "react-mapfilter": "^1.2.6",
+    "react-mapfilter": "^1.2.10",
     "through2": "^2.0.3",
     "traverse": "^0.6.6",
     "websocket-stream": "^5.1.2",
