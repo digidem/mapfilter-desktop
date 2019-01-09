@@ -1,7 +1,7 @@
 {
   "name": "tizii-tizii",
   "productName": "TiziiTizii",
-  "description": "electron app that wraps mapfilter",
+  "description": "Visualization tool for maps, photos and reports of geographic data",
   "author": "Digital Democracy",
   "version": "0.7.0",
   "repository": {
@@ -40,6 +40,7 @@
       },
       "electronPackagerConfig": {
         "asar": true,
+        "executableName": "tizii-tizii",
         "win32metadata": {
           "CompanyName": "TiziiTizii"
         }
@@ -48,7 +49,9 @@
       "electronInstallerDebian": {
         "icon": "static/mapfilter.png",
         "categories": [
-          "Utility"
+          "GNOME",
+          "GTK",
+          "Graphics"
         ]
       },
       "electronInstallerRedhat": {},
