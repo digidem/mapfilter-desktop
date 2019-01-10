@@ -25,7 +25,7 @@ module.exports = {
   },
   "electronWinstallerConfig": {},
   "electronInstallerDebian": {
-    "icon": "resources/mapfilter.png",
+    "icon": "static/mapfilter.png",
     "categories": [
       "GNOME",
       "GTK",
