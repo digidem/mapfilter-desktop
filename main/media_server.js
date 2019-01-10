@@ -7,7 +7,7 @@ function serveFile (req, res, filepath, media) {
     res.statusCode = 404
     res.end()
   })
-  res.setHeader('content-type', mime.lookup(filepath))
+  res.setHeader('content-type', mime.getType(filepath))
   r.pipe(res)
 }
 
