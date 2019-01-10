@@ -20,7 +20,8 @@ module.exports = {
     "executableName": "tizii-tizii",
     "win32metadata": {
       "CompanyName": "TiziiTizii"
-    }
+    },
+    "extraResource": "resources/launcher.sh"
   },
   "electronWinstallerConfig": {},
   "electronInstallerDebian": {
@@ -29,7 +30,8 @@ module.exports = {
       "GNOME",
       "GTK",
       "Graphics"
-    ]
+    ],
+    "bin": "resources/launcher.sh"
   },
   "electronInstallerRedhat": {},
   "github_repository": {
