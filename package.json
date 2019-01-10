@@ -64,6 +64,7 @@
     "react-intl": "^2.7.2",
     "react-mapfilter": "^1.2.10",
     "request": "^2.88.0",
+    "semver": "^5.6.0",
     "through2": "^3.0.0",
     "traverse": "^0.6.6",
     "vips-resizer": "^2.2.0",

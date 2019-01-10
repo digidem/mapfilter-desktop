@@ -1,6 +1,10 @@
+var semver = require('semver')
+
 var isWin = process.platform === 'win32'
 var isMac = process.platform === 'darwin'
 var useAsar = isWin || isMac
+
+var isPrerelease = !!semver.prerelease(process.env.TRAVIS_TAG)
 
 module.exports = {
   "make_targets": {
@@ -37,7 +41,8 @@ module.exports = {
   "github_repository": {
     "owner": "digidem",
     "name": "mapfilter-desktop",
-    "draft": false
+    "draft": false,
+    "prerelease": isPrerelease
   },
   "windowsStoreConfig": {
     "packageName": "",
