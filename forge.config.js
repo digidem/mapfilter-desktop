@@ -22,12 +22,15 @@ module.exports = {
   "electronPackagerConfig": {
     "asar": useAsar,
     "executableName": "tizii-tizii",
+    "extraResource": "resources/launcher.sh",
+    "icon": "static/mapfilter",
     "win32metadata": {
-      "CompanyName": "TiziiTizii"
-    },
-    "extraResource": "resources/launcher.sh"
+      "CompanyName": "Digital Democracy"
+    }
   },
-  "electronWinstallerConfig": {},
+  "electronWinstallerConfig": {
+    "exe": "tizii-tizii.exe"
+  },
   "electronInstallerDebian": {
     "icon": "static/mapfilter.png",
     "categories": [
@@ -43,9 +46,5 @@ module.exports = {
     "name": "mapfilter-desktop",
     "draft": false,
     "prerelease": isPrerelease
-  },
-  "windowsStoreConfig": {
-    "packageName": "",
-    "name": "TiziiTizii"
   }
 }
