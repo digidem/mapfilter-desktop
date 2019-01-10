@@ -2,10 +2,14 @@ const ecstatic = require('ecstatic')
 const url = require('url')
 const path = require('path')
 const fs = require('fs')
+const request = require('request')
+const config = require('../config.json')
+
+const MAPBOX_DEFAULT_STYLE_URL = 'https://api.mapbox.com/styles/v1/mapbox/outdoors-v9' +
+  '?access_token=' + config.mapboxAccessToken
 
 module.exports = function createStyleServer (basedir) {
   const styleFile = path.join(basedir, 'style.json')
-
   return function (req, res) {
     if (url.parse(req.url).pathname.startsWith('/tiles')) {
       res.setHeader('content-encoding', 'gzip')
@@ -18,9 +22,14 @@ module.exports = function createStyleServer (basedir) {
 
   function serveStyleFile (req, res) {
     fs.stat(styleFile, function (err, stat) {
-      if (err) return onError(err)
+      if (err) {
+        // if we can't read the local file, try serving an online style
+        console.warn('No offline style found, using online style')
+        request(MAPBOX_DEFAULT_STYLE_URL).pipe(res)
+        return
+      }
       fs.readFile(styleFile, 'utf8', function (err, data) {
-        if (err) console.error(err)
+        if (err) return onError(err)
         data = new Buffer(data.replace(/\{host\}/gm, 'http://' + req.headers.host))
         res.setHeader('content-type', 'application/json; charset=utf-8')
         res.setHeader('last-modified', (new Date(stat.mtime)).toUTCString())
