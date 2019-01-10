@@ -24,46 +24,7 @@
   "license": "ISC",
   "keywords": [],
   "config": {
-    "forge": {
-      "make_targets": {
-        "win32": [
-          "squirrel"
-        ],
-        "darwin": [
-          "zip",
-          "dmg"
-        ],
-        "linux": [
-          "deb"
-        ]
-      },
-      "electronPackagerConfig": {
-        "asar": true,
-        "executableName": "tizii-tizii",
-        "win32metadata": {
-          "CompanyName": "TiziiTizii"
-        }
-      },
-      "electronWinstallerConfig": {},
-      "electronInstallerDebian": {
-        "icon": "static/mapfilter.png",
-        "categories": [
-          "GNOME",
-          "GTK",
-          "Graphics"
-        ]
-      },
-      "electronInstallerRedhat": {},
-      "github_repository": {
-        "owner": "digidem",
-        "name": "mapfilter-desktop",
-        "draft": false
-      },
-      "windowsStoreConfig": {
-        "packageName": "",
-        "name": "TiziiTizii"
-      }
-    }
+    "forge": "./forge.config.js"
   },
   "standard": {
     "parser": "babel-eslint"
