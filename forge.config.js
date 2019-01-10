@@ -20,7 +20,9 @@ module.exports = {
     ]
   },
   "electronPackagerConfig": {
-    "asar": useAsar,
+    "asar": useAsar && {
+      "unpackDir": "**/node_modules/sharp/**/*"
+    },
     "executableName": "tizii-tizii",
     "extraResource": "resources/launcher.sh",
     "icon": "static/mapfilter",
