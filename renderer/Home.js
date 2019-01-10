@@ -31,7 +31,7 @@ const styleServerPort = styleServer.address().port
 const resizeServerPort = resizeServer.address().port
 
 const mediaBaseUrl = `http://127.0.0.1:${mediaServerPort}/media/`
-const styleUrl = `http://127.0.0.1:${styleServerPort}/style.json`
+const styleUrl = `http://127.0.0.1:${styleServerPort}/style.json?cacheBust=${Date.now()}`
 
 function resizer (url, size) {
   return `http://127.0.0.1:${resizeServerPort}/${size}/${size}/${url}`
