@@ -7,6 +7,7 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import Button from '@material-ui/core/Button'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import { remote } from 'electron'
+import log from 'electron-log'
 import mkdirp from 'mkdirp'
 import path from 'path'
 import { defineMessages, FormattedMessage } from 'react-intl'
@@ -42,9 +43,9 @@ const SelectSyncButton = ({onClick}) => (
   <Button
     style={styles.syncButton}
     onClick={onClick}
-    raised
+    variant="contained"
     autoFocus
-    color='accent'>
+    color='primary'>
     Select Sync Folder
   </Button>
 )
@@ -53,7 +54,7 @@ const DoneButton = ({onClick}) => (
   <Button
     style={styles.button}
     onClick={onClick}
-    raised
+    variant="contained"
     autoFocus
     color='primary'>
     Done
@@ -63,7 +64,7 @@ const DoneButton = ({onClick}) => (
 const CancelButton = ({onClick, disabled}) => (
   <Button
     style={styles.button}
-    raised
+    variant="contained"
     disabled={disabled}
     onClick={onClick}>
     Cancel
@@ -106,37 +107,48 @@ class SyncDialog extends React.Component {
   handleEnter = () => {
     this.setState({
       error: null,
-      progress: 0
+      stage: 'not_started'
     })
   }
 
   sync (dir) {
     const self = this
-    api.replicateWithDirectory(dir, {progressFn: onProgress}, done)
+    log.info('replicating witih dir', dir)
+    // No progress option in current version
+    api.replicateWithDirectory(dir, {}, done)
+    self.setState({stage: 'in_progress'})
     function done (errs) {
-      if (errs) self.setState({error: errs[0]})
-      self.setState({progress: 1})
-    }
-    function onProgress (progress) {
-      self.setState({progress: progress})
+      if (errs) {
+        log.error('error with replication', errs)
+        return self.setState({error: errs[0], stage: 'complete'})
+      }
+      log.info('Replication completed')
+      self.setState({stage: 'complete'})
     }
   }
 
   render () {
     let cardBody
     const {open, onRequestClose} = this.props
-    const {progress} = this.state
+    const {stage, error} = this.state
 
-    switch (progress) {
-      case 0: // not started
+    switch (stage) {
+      case 'not_started': // not started
         cardBody = <BodyActions
           onSelectSyncFolder={this.handleSelectSyncFolder}
           onNewSyncFolder={this.handleNewSyncFolder} />
         break
-      default: // in progress
-        cardBody = <LinearProgress mode='determinate' value={progress * 100} />
+      case 'in_progress': // in progress
+        cardBody = <LinearProgress />
+        break
+      case 'complete':
+      cardBody = <LinearProgress variant='determinate' value={100} />
     }
-    return <Dialog open={open} maxWidth='sm' fullWidth onRequestClose={onRequestClose} onEnter={this.handleEnter}>
+
+    if (error) {
+      cardBody = <div>Sorry, sync failed with an error</div>
+    }
+    return <Dialog open={open} maxWidth='sm' fullWidth onExit={onRequestClose} onEnter={this.handleEnter}>
       <DialogTitle>
         <FormattedMessage {...messages.syncData} />
       </DialogTitle>
@@ -144,9 +156,9 @@ class SyncDialog extends React.Component {
         {cardBody}
       </DialogContent>
       <DialogActions>
-        {progress === 1
+        {stage === 'complete'
           ? <DoneButton onClick={onRequestClose} />
-          : <CancelButton onClick={onRequestClose} disabled={progress > 0} />
+          : <CancelButton onClick={onRequestClose} disabled={stage === 'in_progress'} />
         }
       </DialogActions>
     </Dialog>
