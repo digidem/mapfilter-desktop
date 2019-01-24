@@ -25,7 +25,16 @@ module.exports = function createStyleServer (basedir) {
       if (err) {
         // if we can't read the local file, try serving an online style
         console.warn('No offline style found, using online style')
-        request(MAPBOX_DEFAULT_STYLE_URL).pipe(res)
+        request(MAPBOX_DEFAULT_STYLE_URL)
+          .on('error', error => {
+            if (!res.headersSent) {
+              res.statusCode = 404
+              res.end()
+            }
+          })
+          .pipe(res)
+          .on('error', error => {
+          })
         return
       }
       fs.readFile(styleFile, 'utf8', function (err, data) {
