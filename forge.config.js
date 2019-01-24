@@ -4,7 +4,8 @@ var isWin = process.platform === 'win32'
 // var isMac = process.platform === 'darwin'
 var useAsar = isWin
 
-var isPrerelease = !!semver.prerelease(process.env.TRAVIS_TAG)
+var isPrerelease = !!semver.prerelease(process.env.TRAVIS_TAG) ||
+  !!semver.prerelease(process.env.APPVEYOR_REPO_TAG_NAME)
 
 // We ignore these files to make the bundle smaller, nothing below should be
 // needed at runtime. **THIS COULD BE A CAUSE OF STRANGE BUGS**
