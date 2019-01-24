@@ -17,6 +17,27 @@ import MapFilterDb from 'mapfilter-db'
 import createMediaServer from './media_server'
 import createStyleServer from './style_server'
 import resizer from 'vips-resizer'
+import log from 'electron-log'
+
+process.on('uncaughtException', fatalError)
+
+// Path to `userData`, operating system specific, see
+// https://github.com/atom/electron/blob/master/docs/api/app.md#appgetpathname
+var userDataPath = path.join(app.getPath('userData'), 'org.digital-democracy.MapFilter')
+mkdirp.sync(userDataPath)
+
+function fatalError (error) {
+  log.error('Uncaught Error:', error)
+  log.error('Error stack:', error.stack)
+
+  dialog.showErrorBox(
+    'Oh no! Something unexepected happened',
+    'TiziiTizii encountered an unexpected error, you probably need to restart ' +
+    'for things to work again. The information below will be helpful for ' +
+    'someone to fix the problem.\n\n' +
+    error
+  )
+}
 
 if (isDev) {
   require('electron-debug')()
@@ -43,11 +64,6 @@ app.on('window-all-closed', function () {
   app.quit()
 })
 
-// Path to `userData`, operating system specific, see
-// https://github.com/atom/electron/blob/master/docs/api/app.md#appgetpathname
-var userDataPath = path.join(app.getPath('userData'), 'org.digital-democracy.MapFilter')
-mkdirp.sync(userDataPath)
-
 var appConfig = new Config()
 var pending = 2
 
@@ -69,7 +85,7 @@ const styleServer = http.createServer(createStyleServer(stylePath))
 const resizeServer = http.createServer(resizer)
 
 getPorts([8000, 8100, 8200], function (err, ports) {
-  if (err) throw new Error('could not open servers')
+  if (err) return fatalError(err)
   mediaServer.listen(ports[0])
   styleServer.listen(ports[1])
   resizeServer.listen(ports[2])
@@ -89,8 +105,8 @@ function onAppReady () {
 
   if (isDev) {
     installExtension([REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS])
-      .then((name) => console.log(`Added Extension:  ${name}`))
-      .catch((err) => console.log('An error occurred: ', err))
+      .then((name) => log.info(`Added Extension:  ${name}`))
+      .catch((err) => log.error('An error occurred: ', err))
     // installExtension(REDUX_DEVTOOLS)
     //   .then((name) => console.log(`Added Extension:  ${name}`))
     //   .catch((err) => console.log('An error occurred: ', err))

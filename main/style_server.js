@@ -1,4 +1,5 @@
 const ecstatic = require('ecstatic')
+const log = require('electron-log')
 const url = require('url')
 const path = require('path')
 const fs = require('fs')
@@ -24,9 +25,10 @@ module.exports = function createStyleServer (basedir) {
     fs.stat(styleFile, function (err, stat) {
       if (err) {
         // if we can't read the local file, try serving an online style
-        console.warn('No offline style found, using online style')
+        log.warn('No offline style found, using online style')
         request(MAPBOX_DEFAULT_STYLE_URL)
           .on('error', error => {
+            log.warn('Cannot access online style (maybe offline?)')
             if (!res.headersSent) {
               res.statusCode = 404
               res.end()
@@ -34,6 +36,7 @@ module.exports = function createStyleServer (basedir) {
           })
           .pipe(res)
           .on('error', error => {
+            log.error('Unexpected error when serving style to client', error)
           })
         return
       }
