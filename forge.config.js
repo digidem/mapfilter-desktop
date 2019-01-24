@@ -1,11 +1,13 @@
 var semver = require('semver')
 
 var isWin = process.platform === 'win32'
-var isMac = process.platform === 'darwin'
-var useAsar = isWin || isMac
+// var isMac = process.platform === 'darwin'
+var useAsar = isWin
 
 var isPrerelease = !!semver.prerelease(process.env.TRAVIS_TAG)
 
+// We ignore these files to make the bundle smaller, nothing below should be
+// needed at runtime. **THIS COULD BE A CAUSE OF STRANGE BUGS**
 var ignore = [
   '/node_modules(?:/|.*)(?:test|__tests__|tests|powered-test|example|examples)(?:$|/)',
   '/node_modules/.*\\.d\\ts$',
