@@ -1,87 +1,15 @@
-var BrowserWindow = require('electron').BrowserWindow
+import { BrowserWindow } from 'electron'
+import openAboutWindow from 'about-window'
+import path from 'path'
 
-module.exports = function (app) {
-  return [{
-    label: 'Electron',
-    submenu: [
-      {
-        label: 'About Electron',
-        selector: 'orderFrontStandardAboutPanel:'
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label: 'Services',
-        submenu: []
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label: 'Hide Electron',
-        accelerator: 'Command+H',
-        selector: 'hide:'
-      },
-      {
-        label: 'Hide Others',
-        accelerator: 'Command+Shift+H',
-        selector: 'hideOtherApplications:'
-      },
-      {
-        label: 'Show All',
-        selector: 'unhideAllApplications:'
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label: 'Quit',
-        accelerator: 'Command+Q',
-        click: function () { app.quit() }
-      }
-    ]
-  },
-  {
-    label: 'Edit',
-    submenu: [
-      {
-        label: 'Undo',
-        accelerator: 'Command+Z',
-        selector: 'undo:'
-      },
-      {
-        label: 'Redo',
-        accelerator: 'Shift+Command+Z',
-        selector: 'redo:'
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label: 'Cut',
-        accelerator: 'Command+X',
-        selector: 'cut:'
-      },
-      {
-        label: 'Copy',
-        accelerator: 'Command+C',
-        selector: 'copy:'
-      },
-      {
-        label: 'Paste',
-        accelerator: 'Command+V',
-        selector: 'paste:'
-      },
-      {
-        label: 'Select All',
-        accelerator: 'Command+A',
-        selector: 'selectAll:'
-      }
-    ]
-  },
-  {
-    label: 'Sync',
+import forgeConfig from '../forge.config'
+import { productName } from '../package.json'
+
+const iconPath = path.join(__dirname, '../static/mapfilter.png')
+
+module.exports = function createMenuTemplate (app) {
+  const template = [{
+    label: 'File',
     submenu: [
       {
         label: 'Publish to Website',
@@ -94,7 +22,7 @@ module.exports = function (app) {
         }
       },
       {
-        label: 'Sync with Device...',
+        label: 'Sync with USB...',
         click: function () {
           var win = BrowserWindow.getFocusedWindow()
           if (win) {
@@ -106,42 +34,103 @@ module.exports = function (app) {
     ]
   },
   {
-    label: 'View',
-    submenu: [
-      {
-        label: 'Toggle DevTools',
-        accelerator: 'Alt+Command+I',
-        click: function () {
-          var win = BrowserWindow.getFocusedWindow()
-          if (win) win.toggleDevTools()
-        }
-      }
-    ]
+    label: 'Edit',
+    role: 'editMenu'
   },
   {
-    label: 'Window',
-    submenu: [
-      {
-        label: 'Minimize',
-        accelerator: 'Command+M',
-        selector: 'performMiniaturize:'
-      },
-      {
-        label: 'Close',
-        accelerator: 'Command+W',
-        selector: 'performClose:'
-      },
+    label: 'View',
+    submenu: [{
+      label: 'Reload',
+      role: 'forceReload'
+    }, {
+      label: 'Fullscreen',
+      role: 'toggleFullScreen'
+    }, {
+      label: 'Toggle DevTools',
+      role: 'toggleDevTools'
+    }]
+  },
+  {
+    label: 'Help',
+    submenu: [],
+    role: 'help'
+  }]
+
+  if (process.platform === 'darwin') {
+    // Menu for Mac
+    template.unshift({
+      label: productName,
+      submenu: [
+        {
+          label: 'About ' + productName,
+          click: () => openAboutWindow(iconPath)
+        },
+        {
+          type: 'separator'
+        },
+        {
+          role: 'services'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          role: 'hide'
+        },
+        {
+          role: 'hideothers'
+        },
+        {
+          role: 'unhide'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          role: 'quit'
+        }
+      ]
+    })
+
+    // Window menu (Mac)
+    template.splice(template.findIndex(menuItem => menuItem.label === 'View') + 1, 0, {
+      role: 'window',
+      submenu: [
+        {
+          role: 'minimize'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          role: 'front'
+        }
+      ]
+    })
+  }
+
+  if (process.platform === 'linux' || process.platform === 'win32') {
+    // Help menu (Windows, Linux)
+    template.find(menuItem => menuItem.label === 'Help').submenu.push(
       {
         type: 'separator'
       },
       {
-        label: 'Bring All to Front',
-        selector: 'arrangeInFront:'
+        label: 'About ' + productName,
+        click: () => openAboutWindow(iconPath)
       }
-    ]
-  },
-  {
-    label: 'Help',
-    submenu: []
-  }]
+    )
+  }
+
+  // Add "File > Quit" menu item so Linux distros where the system tray icon is
+  // missing will have a way to quit the app.
+  if (process.platform === 'linux') {
+    // File menu (Linux)
+    template[0].submenu.push({
+      label: 'Quit',
+      click: () => app.quit()
+    })
+  }
+
+  return template
 }
