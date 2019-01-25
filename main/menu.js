@@ -2,7 +2,6 @@ import { BrowserWindow } from 'electron'
 import openAboutWindow from 'about-window'
 import path from 'path'
 
-import forgeConfig from '../forge.config'
 import { productName } from '../package.json'
 
 const iconPath = path.join(__dirname, '../static/mapfilter.png')
