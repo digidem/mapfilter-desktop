@@ -113,15 +113,11 @@ class Home extends React.Component {
       features = JSON.parse(features)
       this._seen = new Set(features.map(f => f.id))
       features = features.map(observationToFeature)
-      this.updateFeatures(features)
-    })
-  }
-
-  updateFeatures (features) {
-    this.setState(state => {
-      const featuresByFormId = features.reduce(formIdReducer, assign({}, state.featuresByFormId))
-      const formId = state.formId || Object.keys(featuresByFormId)[0]
-      return { featuresByFormId, formId }
+      this.setState(state => {
+        const featuresByFormId = features.reduce(formIdReducer, {})
+        const formId = state.formId || Object.keys(featuresByFormId)[0]
+        return { featuresByFormId, formId }
+      })
     })
   }
 
@@ -145,7 +141,7 @@ class Home extends React.Component {
     features.forEach(function (f) {
       f.properties = replaceProtocols(f.properties, mediaBaseUrl)
     })
-    this.updateFeatures(features)
+    this.getFeatures()
   }
 
   handleError = (err) => {
@@ -200,7 +196,7 @@ class Home extends React.Component {
       datasets={Object.keys(featuresByFormId)}
       activeDataset={formId}
       onChange={this.handleDatasetChange} />
-
+    console.log(featuresByFormId[formId])
     return (<div>
       <Message message={alertMessage} />
       <MapFilter
