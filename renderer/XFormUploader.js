@@ -146,11 +146,14 @@ class FormListItem extends React.Component {
         button={missing.length > 0}
         onClick={this.handleClick}>
         <ListItemIcon>
-          {missing.length
+          {missing.length || form.isDuplicate
           ? <WarningIcon style={{color: red[500]}} />
           : <CheckCircleIcon style={{color: green[500]}} />}
         </ListItemIcon>
-        <ListItemText primary={form.name} />
+        <ListItemText
+          primary={form.name}
+          secondary={form.isDuplicate && 'Skipped because a form with this ID is already in TiziiTizii'}
+        />
         {missing.length > 0 && (this.state.open ? <ExpandLess /> : <ExpandMore />)}
       </ListItem>
       <Collapse in={missing.length > 0 && this.state.open} unmountOnExit>
@@ -163,12 +166,6 @@ class FormListItem extends React.Component {
     </div>
   }
 }
-
-const FormList = ({forms}) => (
-  <List>
-    {forms.map((form, idx) => <FormListItem form={form} key={idx} />)}
-  </List>
-)
 
 const UploadButton = ({uploading, onClick, disabled}) => (
   <Button
@@ -250,9 +247,12 @@ class XFormUploader extends React.Component {
     this.setState({uploading: true})
     const {uploadForm, uploadFile} = this.props
     const {forms} = this.state
+    const formsToUpload = forms
+      .filter(f => !f.isDuplicate)
+      .map(processForm)
 
     Promise
-      .all(forms.map(processForm))
+      .all(formsToUpload)
       .then(this.onUploadSuccess.bind(this))
       .catch(this.onUploadFailure.bind(this))
 
@@ -271,12 +271,14 @@ class XFormUploader extends React.Component {
   }
 
   onUploadFailure (err) {
+    console.log('upload failure')
     this.resetUploader()
     this.props.onUpload(err)
     this.props.onRequestClose()
   }
 
   onUploadSuccess (uploadedForms) {
+    console.log('upload success')
     this.resetUploader()
     this.props.onUpload(null, uploadedForms)
     this.props.onRequestClose()
@@ -343,8 +345,13 @@ class XFormUploader extends React.Component {
   }
 
   render () {
-    const { open, onRequestClose, classes } = this.props
+    const { open, onRequestClose, classes, features } = this.props
     const { forms, uploading } = this.state
+    const existingIds = features.map(f => f.id)
+    ;(forms || []).forEach(f => {
+      f.isDuplicate = existingIds.indexOf(f.data.id) > -1
+      if (f.isDuplicate) console.log('dup', f.data.id)
+    })
     return (
       <Dialog
         classes={{paper: classes.root}}
@@ -358,7 +365,9 @@ class XFormUploader extends React.Component {
           <div className={classes.body}>
             {forms.length === 0
               ? <DragDropArea onChange={this.handleFiles} classes={classes} />
-              : <FormList forms={forms} />
+              : <List>
+                {forms.map((form, idx) => <FormListItem form={form} key={idx} />)}
+              </List>
             }
           </div>
         </DialogContent>
