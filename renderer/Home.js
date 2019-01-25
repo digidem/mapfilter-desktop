@@ -102,6 +102,11 @@ class Home extends React.Component {
     this.setState({showModal: false})
   }
 
+  closeSync = () => {
+    this.getFeatures()
+    this.closeModal()
+  }
+
   getFeatures () {
     getObservations((err, features) => {
       if (err) return this.handleError(err)
@@ -223,7 +228,7 @@ class Home extends React.Component {
         appBarTitle={toolbarTitle} />
       <SyncDialog
         open={showModal === 'sync'}
-        onRequestClose={this.closeModal} />
+        onRequestClose={this.closeSync} />
       <PublishDialog
         server={appConfig.get('publish-server')}
         doPublish={this.replicateToServer}
@@ -231,6 +236,7 @@ class Home extends React.Component {
         onRequestClose={this.closeModal} />
       <XFormUploader
         open={showModal === 'add'}
+        features={featuresByFormId[formId] || []}
         onRequestClose={this.closeModal}
         uploadForm={this.uploadForm}
         uploadFile={this.uploadFile}
