@@ -64,7 +64,7 @@
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
     "react-intl": "^2.7.2",
-    "react-mapfilter": "^1.2.10",
+    "react-mapfilter": "^1.2.11",
     "request": "^2.88.0",
     "semver": "^5.6.0",
     "through2": "^3.0.0",
