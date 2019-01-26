@@ -3,7 +3,7 @@
   "productName": "TiziiTizii",
   "description": "Visualization tool for maps, photos and reports of geographic data",
   "author": "Digital Democracy",
-  "version": "0.8.1-rc7",
+  "version": "0.8.1-rc8",
   "repository": {
     "type": "git",
     "url": "git://github.com/digidem/mapfilter-desktop.git"
